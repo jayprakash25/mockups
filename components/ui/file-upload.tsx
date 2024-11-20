@@ -51,8 +51,22 @@ export const FileUpload = ({
     },
   });
 
+  const rootProps = getRootProps();
+
   return (
-    <div className="w-full" {...getRootProps()}>
+    <div 
+      className="w-full" 
+      onClick={rootProps.onClick}
+      onKeyDown={rootProps.onKeyDown}
+      onFocus={rootProps.onFocus}
+      onBlur={rootProps.onBlur}
+      onDrop={rootProps.onDrop}
+      onDragEnter={rootProps.onDragEnter}
+      onDragOver={rootProps.onDragOver}
+      onDragLeave={rootProps.onDragLeave}
+      role={rootProps.role}
+      tabIndex={rootProps.tabIndex}
+    >
       <motion.div
         onClick={handleClick}
         whileHover="animate"

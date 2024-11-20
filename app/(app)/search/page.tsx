@@ -313,17 +313,16 @@ function ActionButton({
                  hover:border-emerald-500 dark:hover:border-emerald-400
                  hover:shadow-md active:scale-[0.98]
                  w-full transition-all duration-300 ease-in-out
-                 hover:bg-gradient-to-r hover:from-emerald-500 hover:to-emerald-400
-                 hover:text-white dark:hover:text-white"
+                 hover:bg-white dark:hover:bg-gray-800"
     >
       <span className="p-1.5 rounded-lg bg-white/50 dark:bg-gray-800 
-                      group-hover:bg-white/20
+                      group-hover:bg-green-100 dark:group-hover:bg-green-900/20
                       transition-colors duration-300">
         {icon}
       </span>
       <div className="flex flex-col items-start min-w-0">
         <span className="text-sm font-medium truncate">{text}</span>
-        <span className="text-xs text-gray-500 dark:text-gray-400 group-hover:text-white/90 truncate">
+        <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
           {subtext}
         </span>
       </div>
