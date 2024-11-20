@@ -69,12 +69,12 @@ export function Sidebar({
 
   return (
     <>
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle Button - Moved to top left */}
       <Button
         variant="default"
         size="icon"
         className={cn(
-          'fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-50',
+          'fixed top-4 left-4 h-12 w-12 rounded-full shadow-lg z-50',
           'lg:hidden',
           !collapsed && 'hidden'
         )}
@@ -120,106 +120,109 @@ export function Sidebar({
         <Separator />
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Main Actions */}
-          <div className="p-2 space-y-2">
-            <Button
-              variant="default"
-              className={cn(
-                'w-full justify-start gap-3',
-                collapsed && 'justify-center'
-              )}
-              onClick={onNewItem}
-            >
-              <Plus className="h-4 w-4" />
-              {!collapsed && <span>New Item</span>}
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className={cn(
-                'w-full justify-start gap-3',
-                collapsed && 'justify-center'
-              )}
-              onClick={onSearch}
-            >
-              <Search className="h-4 w-4" />
-              {!collapsed && <span>Search</span>}
-            </Button>
+        <div className="flex-1 flex flex-col justify-between">
+          <div>
+            {/* Main Actions */}
+            <div className="p-2 space-y-2">
+              <Button
+                variant="default"
+                className={cn(
+                  'w-full justify-start gap-3',
+                  collapsed && 'justify-center'
+                )}
+                onClick={onNewItem}
+              >
+                <Plus className="h-4 w-4" />
+                {!collapsed && <span>New Item</span>}
+              </Button>
+              
+              <Button
+                variant="ghost"
+                className={cn(
+                  'w-full justify-start gap-3',
+                  collapsed && 'justify-center'
+                )}
+                onClick={onSearch}
+              >
+                <Search className="h-4 w-4" />
+                {!collapsed && <span>Search</span>}
+              </Button>
+            </div>
+
+            <Separator className="my-2" />
+
+            {/* Recent Items */}
+            {!collapsed && recentItems.length > 0 && (
+              <div className="flex-1 flex flex-col min-h-0">
+                <Collapsible
+                  open={historyOpen}
+                  onOpenChange={setHistoryOpen}
+                  className="px-2"
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between p-2"
+                    >
+                      <div className="flex items-center gap-2">
+                        <History className="h-4 w-4" />
+                        <span className="font-medium">Recent</span>
+                      </div>
+                      <Clock className="h-3 w-3" />
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarRecentItems
+                      items={recentItems}
+                      onItemClick={(id) => handleNavigate(`/view/${id}`)}
+                    />
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            )}
           </div>
 
-          <Separator className="my-2" />
-
-          {/* Recent Items */}
-          {!collapsed && recentItems.length > 0 && (
-            <div className="flex-1 flex flex-col min-h-0">
-              <Collapsible
-                open={historyOpen}
-                onOpenChange={setHistoryOpen}
-                className="px-2"
-              >
-                <CollapsibleTrigger asChild>
+          {/* User Profile - Now will stick to bottom */}
+          <div>
+            <Separator />
+            <div className="p-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="w-full justify-between p-2"
+                    className={cn(
+                      'w-full justify-start gap-3 px-2',
+                      collapsed && 'justify-center'
+                    )}
                   >
-                    <div className="flex items-center gap-2">
-                      <History className="h-4 w-4" />
-                      <span className="font-medium">Recent</span>
-                    </div>
-                    <Clock className="h-3 w-3" />
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={user.avatarUrl} />
+                      <AvatarFallback>{user.avatarFallback}</AvatarFallback>
+                    </Avatar>
+                    {!collapsed && (
+                      <div className="flex flex-col items-start text-sm">
+                        <span className="font-medium">{user.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {user.email}
+                        </span>
+                      </div>
+                    )}
                   </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarRecentItems
-                    items={recentItems}
-                    onItemClick={(id) => handleNavigate(`/view/${id}`)}
-                  />
-                </CollapsibleContent>
-              </Collapsible>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onProfileClick}>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onSettingsClick}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-          )}
-
-          <Separator />
-
-          {/* User Profile */}
-          <div className="p-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 px-2',
-                    collapsed && 'justify-center'
-                  )}
-                >
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src={user.avatarUrl} />
-                    <AvatarFallback>{user.avatarFallback}</AvatarFallback>
-                  </Avatar>
-                  {!collapsed && (
-                    <div className="flex flex-col items-start text-sm">
-                      <span className="font-medium">{user.name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {user.email}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onProfileClick}>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onSettingsClick}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
       </aside>

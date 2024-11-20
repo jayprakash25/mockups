@@ -27,8 +27,10 @@ const secondaryVariant = {
 
 export const FileUpload = ({
   onChange,
+  onCancel,
 }: {
   onChange?: (files: File[]) => void;
+  onCancel?: () => void;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [ctaEnabled, setCtaEnabled] = useState(false);
@@ -167,18 +169,29 @@ export const FileUpload = ({
          
         </div>
       </motion.div>
-      <div className="flex justify-center">
-      <button
-            disabled={!ctaEnabled}
-            className={`mt-6 px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 ${
-              ctaEnabled
-                ? "bg-emerald-500 hover:bg-emerald-600"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
-          >
-            Generate Quiz
-          </button>
-          </div>
+      <div className="flex flex-col gap-3 mt-6">
+        <button
+          disabled={!ctaEnabled}
+          className={`w-full px-4 py-2 rounded-xl text-sm font-semibold
+            transition-all duration-300 ${
+            ctaEnabled
+              ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+              : "bg-gray-400 text-white cursor-not-allowed"
+          }`}
+        >
+          Generate Quiz
+        </button>
+        <button 
+          onClick={onCancel}
+          className="w-full px-4 py-2 rounded-xl text-sm
+            bg-gray-100 dark:bg-gray-800 
+            text-gray-700 dark:text-gray-300
+            hover:bg-gray-200 dark:hover:bg-gray-700
+            transition-all duration-300 ease-in-out"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };

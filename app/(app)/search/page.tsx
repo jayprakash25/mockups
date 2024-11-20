@@ -138,18 +138,9 @@ export default function SearchPage() {
                         onChange={(files) => {
                           console.log('Files uploaded:', files)
                           // Handle your file upload logic here
-                        }} 
+                        }}
+                        onCancel={() => setUploadOpen(false)}
                       />
-                      <button 
-                        onClick={() => setUploadOpen(false)}
-                        className="mt-4 w-full px-4 py-2 rounded-xl text-sm
-                                 bg-gray-100 dark:bg-gray-800 
-                                 text-gray-700 dark:text-gray-300
-                                 hover:bg-gray-200 dark:hover:bg-gray-700
-                                 transition-all duration-300 ease-in-out"
-                      >
-                        Cancel
-                      </button>
                     </div>
                   )}
                 </div>
@@ -170,42 +161,75 @@ export default function SearchPage() {
                       }} 
                     />
                   ) : (
-                    <div className="relative w-full group">
-                      <input
-                        ref={inputRef}
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={searchQuery ? "" : "What do you want to learn?"}
-                        className="w-full px-4 py-3 text-base bg-white dark:bg-gray-800 rounded-xl
-                                   border border-gray-200 dark:border-gray-700
-                                   focus:outline-none focus:ring-2 focus:ring-emerald-500/20
-                                   focus:border-emerald-500 dark:focus:border-emerald-400
-                                   shadow-sm transition-all duration-300 ease-in-out
-                                   placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                        autoFocus
-                      />
-                      {!searchQuery && (
-                        <div className="absolute right-10 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
-                          <kbd className="hidden sm:inline-flex h-5 items-center rounded border 
-                                        bg-gray-100 px-1.5 font-mono text-[10px] font-medium text-gray-500
-                                        dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400
-                                        transition-colors duration-300">
-                            ESC
-                          </kbd>
-                        </div>
-                      )}
-                      <button 
-                        onClick={() => {
-                          setSearchOpen(false)
-                          setSearchQuery('')
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg
-                                   text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-                                   hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all duration-300 ease-in-out"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
+                    <div className="w-full">
+                      <div className="relative w-full group">
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder={searchQuery ? "" : "What do you want to learn?"}
+                          className="w-full px-4 py-3 text-base bg-white dark:bg-gray-800 rounded-xl
+                                    border border-gray-200 dark:border-gray-700
+                                    focus:outline-none focus:ring-2 focus:ring-emerald-500/20
+                                    focus:border-emerald-500 dark:focus:border-emerald-400
+                                    shadow-sm transition-all duration-300 ease-in-out
+                                    placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                          autoFocus
+                        />
+                        {!searchQuery && (
+                          <div className="absolute right-10 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
+                            <kbd className="hidden sm:inline-flex h-5 items-center rounded border 
+                                          bg-gray-100 px-1.5 font-mono text-[10px] font-medium text-gray-500
+                                          dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400
+                                          transition-colors duration-300">
+                              ESC
+                            </kbd>
+                          </div>
+                        )}
+                        <button 
+                          onClick={() => {
+                            setSearchOpen(false)
+                            setSearchQuery('')
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg
+                                    text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
+                                    hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all duration-300 ease-in-out"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      
+                      <div className="flex justify-between gap-3 mt-6">
+                        <button 
+                          onClick={() => {
+                            setSearchOpen(false)
+                            setSearchQuery('')
+                          }}
+                          className="px-6 py-2 rounded-xl text-sm
+                            bg-gray-100 dark:bg-gray-800 
+                            text-gray-700 dark:text-gray-300
+                            hover:bg-gray-200 dark:hover:bg-gray-700
+                            transition-all duration-300 ease-in-out"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          disabled={!searchQuery}
+                          onClick={() => {
+                            // Handle search action
+                            console.log('Searching for:', searchQuery)
+                          }}
+                          className={`px-6 py-2 rounded-xl text-sm font-semibold
+                            transition-all duration-300 ${
+                            searchQuery
+                              ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                              : "bg-gray-400 text-white cursor-not-allowed"
+                          }`}
+                        >
+                          Search
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
