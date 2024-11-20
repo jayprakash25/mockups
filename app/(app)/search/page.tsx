@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Search, Upload, X, Command, Brain, Sparkles, Globe2, Code2, Palette, Cloud, BookOpen, Rocket } from 'lucide-react'
+import { Search, Upload, X,  Brain, Sparkles, Globe2, Code2, Palette, Cloud, BookOpen, Rocket } from 'lucide-react'
 
 interface ActionButtonProps {
   icon: React.ReactNode
@@ -88,13 +88,13 @@ export default function SearchPage() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [searchOpen])
 
-  const [containerWidth, setContainerWidth] = useState<number>(0)
+  // const [containerWidth, setContainerWidth] = useState<number>(0)
 
-  useEffect(() => {
-    if (containerRef.current) {
-      setContainerWidth(containerRef.current.offsetWidth)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (containerRef.current) {
+  //     setContainerWidth(containerRef.current.offsetWidth)
+  //   }
+  // }, [])
 
   return (
     <main className="flex-1 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
