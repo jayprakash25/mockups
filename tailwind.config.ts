@@ -82,13 +82,24 @@ export default {
   			'expand': {
   				'0%': { width: '0', opacity: '0' },
   				'100%': { width: '100%', opacity: '1' }
-  			}
+  			},
+  			spotlight: {
+  				"0%": {
+  					opacity: '0',
+  					transform: "translate(-72%, -62%) scale(0.5)",
+  				},
+  				"100%": {
+  					opacity: '1',
+  					transform: "translate(-50%,-40%) scale(1)",
+  				},
+  			},
   		},
   		animation: {
   			'fade-in-down': 'fade-in-down 0.5s ease-out',
   			'fade-in-scale': 'fade-in-scale 0.3s ease-out',
   			'fade-in': 'fade-in 0.5s ease-out',
-  			'expand': 'expand 0.3s ease-out'
+  			'expand': 'expand 0.3s ease-out',
+  			spotlight: "spotlight 2s ease .75s 1 forwards",
   		}
   	}
   },

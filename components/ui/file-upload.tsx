@@ -31,11 +31,13 @@ export const FileUpload = ({
   onChange?: (files: File[]) => void;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
+  const [ctaEnabled, setCtaEnabled] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (newFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     onChange && onChange(newFiles);
+    setCtaEnabled(true);
   };
 
   const handleClick = () => {
@@ -51,22 +53,8 @@ export const FileUpload = ({
     },
   });
 
-  const rootProps = getRootProps();
-
   return (
-    <div 
-      className="w-full" 
-      onClick={rootProps.onClick}
-      onKeyDown={rootProps.onKeyDown}
-      onFocus={rootProps.onFocus}
-      onBlur={rootProps.onBlur}
-      onDrop={rootProps.onDrop}
-      onDragEnter={rootProps.onDragEnter}
-      onDragOver={rootProps.onDragOver}
-      onDragLeave={rootProps.onDragLeave}
-      role={rootProps.role}
-      tabIndex={rootProps.tabIndex}
-    >
+    <div className="w-full" {...getRootProps()}>
       <motion.div
         onClick={handleClick}
         whileHover="animate"
@@ -176,8 +164,21 @@ export const FileUpload = ({
               ></motion.div>
             )}
           </div>
+         
         </div>
       </motion.div>
+      <div className="flex justify-center">
+      <button
+            disabled={!ctaEnabled}
+            className={`mt-6 px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 ${
+              ctaEnabled
+                ? "bg-emerald-500 hover:bg-emerald-600"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
+          >
+            Generate Quiz
+          </button>
+          </div>
     </div>
   );
 };
