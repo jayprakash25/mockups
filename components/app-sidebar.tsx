@@ -4,15 +4,13 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
-  BookOpen,
-  Clock,
-  FileText,
   History,
   Menu,
   Plus,
   Search,
   Settings,
   User,
+  Clock,
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -29,48 +27,30 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { SidebarProps } from '@/components/ui/sidebar/types';
+import { SidebarRecentItems } from '@/components/ui/sidebar/sidebar-recent-items';
 
-interface NavItem {
-  icon: React.ElementType;
-  label: string;
-  href: string;
-}
-
-// Mock history data - in real app, this would come from your backend
-const recentGenerations = [
-  {
-    id: 1,
-    title: 'React Fundamentals',
-    type: 'quiz',
-    date: '2h ago',
-  },
-  {
-    id: 2,
-    title: 'JavaScript Basics',
-    type: 'flashcards',
-    date: '5h ago',
-  },
-  {
-    id: 3,
-    title: 'TypeScript Guide',
-    type: 'lesson',
-    date: '1d ago',
-  },
-];
-
-export default function AppSidebar() {
-  const [collapsed, setCollapsed] = useState(true);
+export function Sidebar({
+  brand,
+  user,
+  recentItems = [],
+  onNavigate,
+  onNewItem,
+  onSearch,
+  onProfileClick,
+  onSettingsClick,
+  className,
+  defaultCollapsed = false,
+}: SidebarProps) {
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
   const [isMobile, setIsMobile] = useState(false);
-  const [activePath, setActivePath] = useState('/');
   const [historyOpen, setHistoryOpen] = useState(true);
 
-  // Add responsive detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-      // Auto-collapse on mobile
-      if (window.innerWidth <= 768) {
+      const isMobileView = window.innerWidth <= 768;
+      setIsMobile(isMobileView);
+      if (isMobileView) {
         setCollapsed(true);
       }
     };
@@ -80,52 +60,51 @@ export default function AppSidebar() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'quiz':
-        return FileText;
-      case 'flashcards':
-        return BookOpen;
-      default:
-        return FileText;
+  const handleNavigate = (path: string) => {
+    onNavigate?.(path);
+    if (isMobile) {
+      setCollapsed(true);
     }
   };
 
   return (
     <>
-      {/* Mobile Toggle Button (FAB) */}
+      {/* Mobile Toggle Button */}
       <Button
         variant="default"
         size="icon"
         className={cn(
           'fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-50',
-          'lg:hidden', // Only show on mobile
-          !collapsed && 'hidden' // Hide when sidebar is open
+          'lg:hidden',
+          !collapsed && 'hidden'
         )}
         onClick={() => setCollapsed(false)}
       >
         <Menu className="h-6 w-6" />
       </Button>
 
-      {/* Overlay for mobile when sidebar is open */}
+      {/* Mobile Overlay */}
       {!collapsed && isMobile && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setCollapsed(true)}
         />
       )}
-      
+
+      {/* Sidebar */}
       <aside
         className={cn(
           'fixed lg:relative flex h-screen flex-col border-r bg-background transition-all duration-300 z-40',
           collapsed ? 'w-0 lg:w-16 -translate-x-full lg:translate-x-0' : 'w-72',
-          'overflow-hidden' // Prevent content flash during animation
+          'overflow-hidden',
+          className
         )}
       >
+        {/* Brand Header */}
         <div className="flex h-16 items-center justify-between px-4">
           {!collapsed && (
             <span className="text-xl font-semibold bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
-              Tesla Learn
+              {brand.name}
             </span>
           )}
           <Button
@@ -140,6 +119,7 @@ export default function AppSidebar() {
 
         <Separator />
 
+        {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Main Actions */}
           <div className="p-2 space-y-2">
@@ -149,10 +129,10 @@ export default function AppSidebar() {
                 'w-full justify-start gap-3',
                 collapsed && 'justify-center'
               )}
-              onClick={() => setActivePath('/new')}
+              onClick={onNewItem}
             >
               <Plus className="h-4 w-4" />
-              {!collapsed && <span>New Generation</span>}
+              {!collapsed && <span>New Item</span>}
             </Button>
             
             <Button
@@ -161,17 +141,17 @@ export default function AppSidebar() {
                 'w-full justify-start gap-3',
                 collapsed && 'justify-center'
               )}
-              onClick={() => setActivePath('/search')}
+              onClick={onSearch}
             >
               <Search className="h-4 w-4" />
-              {!collapsed && <span>Search Content</span>}
+              {!collapsed && <span>Search</span>}
             </Button>
           </div>
 
           <Separator className="my-2" />
 
-          {/* Recent Generations */}
-          {!collapsed && (
+          {/* Recent Items */}
+          {!collapsed && recentItems.length > 0 && (
             <div className="flex-1 flex flex-col min-h-0">
               <Collapsible
                 open={historyOpen}
@@ -191,29 +171,10 @@ export default function AppSidebar() {
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <ScrollArea className="h-[calc(100vh-280px)]">
-                    <div className="space-y-1 p-1">
-                      {recentGenerations.map((item) => {
-                        const Icon = getTypeIcon(item.type);
-                        return (
-                          <Button
-                            key={item.id}
-                            variant="ghost"
-                            className="w-full justify-start gap-3 h-auto py-2 px-3"
-                            onClick={() => setActivePath(`/view/${item.id}`)}
-                          >
-                            <Icon className="h-4 w-4 shrink-0" />
-                            <div className="flex flex-col items-start text-sm">
-                              <span className="font-medium">{item.title}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {item.date}
-                              </span>
-                            </div>
-                          </Button>
-                        );
-                      })}
-                    </div>
-                  </ScrollArea>
+                  <SidebarRecentItems
+                    items={recentItems}
+                    onItemClick={(id) => handleNavigate(`/view/${id}`)}
+                  />
                 </CollapsibleContent>
               </Collapsible>
             </div>
@@ -233,14 +194,14 @@ export default function AppSidebar() {
                   )}
                 >
                   <Avatar className="h-6 w-6">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage src={user.avatarUrl} />
+                    <AvatarFallback>{user.avatarFallback}</AvatarFallback>
                   </Avatar>
                   {!collapsed && (
                     <div className="flex flex-col items-start text-sm">
-                      <span className="font-medium">John Doe</span>
+                      <span className="font-medium">{user.name}</span>
                       <span className="text-xs text-muted-foreground">
-                        john@example.com
+                        {user.email}
                       </span>
                     </div>
                   )}
@@ -249,11 +210,11 @@ export default function AppSidebar() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={onProfileClick}>
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={onSettingsClick}>
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </DropdownMenuItem>
