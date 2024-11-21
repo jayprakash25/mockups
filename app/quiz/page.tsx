@@ -81,7 +81,7 @@ export default function QuizPage() {
 
     const handleFinish = () => {
         setIsComplete(true);
-        router.push('/lessons');
+        router.push('/report');
     };
 
     const handleAiSubmit = () => {
