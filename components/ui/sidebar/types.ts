@@ -32,6 +32,8 @@ export interface SidebarProps {
   onSearch?: () => void;
   onProfileClick?: () => void;
   onSettingsClick?: () => void;
+  collapsed?: boolean;
+  setCollapsed: (collapsed: boolean) => void;
   className?: string;
   defaultCollapsed?: boolean;
 } 
