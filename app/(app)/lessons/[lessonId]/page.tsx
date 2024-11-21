@@ -127,7 +127,7 @@ export default function LessonPage() {
                   World War II and the Holocaust
                 </h2>
                 <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>Hitler's aggressive expansion policies led to the invasion of Poland in 1939, triggering World War II. His regime systematically persecuted and murdered millions in the Holocaust, particularly targeting Jewish people.</p>
+                  <p>Hitlers aggressive expansion policies led to the invasion of Poland in 1939, triggering World War II. His regime systematically persecuted and murdered millions in the Holocaust, particularly targeting Jewish people.</p>
                   <p>As Allied forces closed in on Berlin in 1945, Hitler committed suicide in his bunker. The war in Europe ended shortly after, leaving a devastated continent and lessons that continue to resonate today.</p>
                 </div>
               </section>
@@ -137,7 +137,7 @@ export default function LessonPage() {
                   Historical Impact
                 </h2>
                 <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>The aftermath of Hitler's regime led to significant changes in international law, human rights policies, and global politics. The United Nations was established, and the world adopted the Universal Declaration of Human Rights to prevent future atrocities.</p>
+                  <p>The aftermath of Hitlers regime led to significant changes in international law, human rights policies, and global politics. The United Nations was established, and the world adopted the Universal Declaration of Human Rights to prevent future atrocities.</p>
                 </div>
               </section>
             </div>
