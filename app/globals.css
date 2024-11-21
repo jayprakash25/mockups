@@ -125,7 +125,7 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 .animate-slide-in {
@@ -183,4 +183,12 @@
 
 .scale-in {
   animation: scale-in 0.2s ease-out;
+}
+
+.markdown-content pre {
+  @apply my-4 p-4 bg-muted rounded-lg overflow-x-auto;
+}
+
+.markdown-content code {
+  @apply font-mono text-sm;
 }
