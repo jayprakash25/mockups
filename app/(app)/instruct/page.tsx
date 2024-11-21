@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, ArrowRight, X, Cannabis } from 'lucide-react'
+import { ArrowRight, CheckCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Toaster, toast } from 'sonner'
 import { InstructionsForm } from '@/components/instruct/InstructionForm'
 import AIAssistant from '@/components/instruct/Aiassistant'
 import { Toggle } from '@/components/instruct/Toggle'
+import { BUTTON_GRADIENT } from '@/lib/constants'
+import { MultiStepLoader } from '@/components/step-loader'
 
 export default function InstructionsPage() {
   const [isPublisher, setIsPublisher] = useState(false)
@@ -16,11 +18,18 @@ export default function InstructionsPage() {
     instructions: ''
   })
   const [showAIAssistant, setShowAIAssistant] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
+
+  const steps = ['Lessons', 'Quiz', 'Flashcards']
+
+  const loadingStates = [
+    { text: 'Generating your lessons...' },
+    { text: 'Creating quiz questions...' },
+    { text: 'Preparing flashcards...' },
+  ]
 
   const handleSubmit = () => {
-    toast.success('Generating your personalized content...', {
-      description: 'This might take a moment.',
-    })
     console.log('Generating content with:', formData)
   }
 
@@ -31,46 +40,32 @@ export default function InstructionsPage() {
     }))
   }
 
+  const handleGenerate = () => {
+    setIsGenerating(true)
+    handleSubmit()
+
+    setTimeout(() => {
+      window.location.href = '/lessons'
+    }, 6000)
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       <Toaster position="top-center" />
-      <div className="min-h-screen p-4 sm:p-6 flex items-center justify-center">
-        <div className="max-w-6xl w-full relative">
-          {/* Animated Header */}
-          {/* <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center space-y-3 mb-8 sm:mb-12 relative"
-          >
-            <div className="inline-block">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight">
-                <span className="bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
-                  {isPublisher ? "Create Amazing Content" : "Customize Your Learning"}
-                </span>
-              </h1>
-              <div className="h-px w-1/3 bg-gradient-to-r from-emerald-400 to-blue-500 mx-auto mt-3 opacity-50" />
-            </div>
-            <p className="text-sm font-light text-gray-600 dark:text-gray-400 max-w-md mx-auto tracking-wide">
-              {isPublisher 
-                ? "Transform your knowledge into engaging learning materials"
-                : "Tell us how you learn best, and we'll adapt to your style"}
-            </p>
-          </motion.div> */}
-
-          <div className="grid grid-cols-1 lg:grid-cols-5 place-items-center gap-6">
-            {/* Main Form Section */}
+      <div className="min-h-screen p-4 sm:p-6 md:p-8 flex items-center justify-center relative">
+        <div className="w-full max-w-6xl relative">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
             <motion.div 
-              className="lg:col-span-3 lg:col-start-2 space-y-6 w-full max-w-2xl"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              className="space-y-4 sm:space-y-6 w-full max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-3 sm:p-4 md:p-6 shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10">
                 <Toggle isPublisher={isPublisher} onToggle={() => setIsPublisher(!isPublisher)} />
               </div>
 
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-3 sm:p-4 md:p-6 shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10">
                 <InstructionsForm
                   formData={{...formData, difficultyLevel: 'intermediate'}}
                   onChange={setFormData}
@@ -78,14 +73,23 @@ export default function InstructionsPage() {
                 />
               </div>
 
-            
+              <div className="flex justify-end mt-4 sm:mt-6">
+                <button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={isGenerating}
+                  className={`${BUTTON_GRADIENT} text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''} w-full sm:w-auto justify-center`}
+                >
+                  <span>{isPublisher ? 'Generate Content' : 'Start Learning'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </motion.div>
 
-            {/* AI Assistant Section (Desktop) */}
             <motion.div 
-              className="lg:col-span-1 lg:col-start-5 hidden lg:block"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              className="hidden sm:block"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <AIAssistant 
@@ -95,47 +99,21 @@ export default function InstructionsPage() {
             </motion.div>
           </div>
 
-          {/* AI Assistant Toggle (Mobile) */}
-          <motion.button
-            className="fixed bottom-4 right-4 lg:hidden z-50 bg-emerald-500 text-white p-3 rounded-full shadow-lg"
-            onClick={() => setShowAIAssistant(true)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Cannabis className="w-6 h-6" />
-            <span className="sr-only">Open AI Assistant</span>
-          </motion.button>
-
-          {/* AI Assistant Modal (Mobile) */}
-          <AnimatePresence>
-            {showAIAssistant && (
-              <motion.div
-                initial={{ opacity: 0, y: "100%" }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 500 }}
-                className="fixed inset-0 z-50 lg:hidden bg-white dark:bg-gray-800 overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-4">
-                  <button
-                    onClick={() => setShowAIAssistant(false)}
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  >
-                    <X className="w-6 h-6" />
-                    <span className="sr-only">Close AI Assistant</span>
-                  </button>
-                </div>
-                <div className="h-full overflow-y-auto p-4">
-                  <AIAssistant 
-                    isPublisher={isPublisher} 
-                    onUpdateInstructions={handleAIUpdate}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <MultiStepLoader
+            loadingStates={[
+              { text: 'Analyzing your requirements...' },
+              { text: 'Crafting personalized lessons...' },
+              { text: 'Generating interactive quizzes...' },
+              { text: 'Creating study flashcards...' },
+              { text: 'Finalizing your learning experience...' }
+            ]}
+            loading={isGenerating}
+            duration={1500}
+            loop={false}
+          />
         </div>
       </div>
     </main>
   )
 }
+

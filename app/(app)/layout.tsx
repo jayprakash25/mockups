@@ -28,7 +28,7 @@ export default function AppLayout({
           }
         ]}
         onNavigate={(path) => router.push(path)}
-        onNewItem={() => router.push('/new')}
+        onNewItem={() => router.push('/search')}
         onSearch={() => router.push('/search')}
         onProfileClick={() => router.push('/profile')}
         onSettingsClick={() => router.push('/settings')}
