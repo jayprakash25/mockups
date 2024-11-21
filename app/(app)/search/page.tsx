@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Search, Upload, X,  Brain, Sparkles, Globe2, Code2, Palette, Cloud, BookOpen, Rocket } from 'lucide-react'
+import { Search, Upload, X, Brain, Sparkles, Globe2, Code2, Palette, Cloud, BookOpen, Rocket } from 'lucide-react'
 import { FileUpload } from '@/components/ui/file-upload'
+import { BUTTON_GRADIENT } from '@/lib/constants'
+import Link from 'next/link'
 
 interface ActionButtonProps {
   icon: React.ReactNode
@@ -94,25 +96,17 @@ export default function SearchPage() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [searchOpen, uploadOpen])
 
-  // const [containerWidth, setContainerWidth] = useState<number>(0)
-
-  // useEffect(() => {
-  //   if (containerRef.current) {
-  //     setContainerWidth(containerRef.current.offsetWidth)
-  //   }
-  // }, [])
-
   return (
     <main className="flex-1 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6">
         <div className="w-full max-w-2xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center tracking-tight text-gray-900 dark:text-white transition-colors duration-300">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center tracking-tight text-gray-900 dark:text-white transition-colors duration-300">
             {searchOpen ? (
               "Explore Knowledge"
             ) : uploadOpen ? (
               "Upload Your Content"
             ) : (
-              "Discover Your Next Insight"
+              "What do you want to learn?"
             )}
           </h1>
 
@@ -120,10 +114,10 @@ export default function SearchPage() {
             <div className={`w-full flex justify-center transition-all duration-500 ease-in-out ${
               searchOpen || uploadOpen ? 'scale-105' : 'scale-100'
             }`}>
-              <div className="w-full flex gap-3">
+              <div className="w-full flex flex-col sm:flex-row gap-3">
                 <div className={`transition-all duration-500 ease-in-out ${
                   searchOpen ? 'w-0 opacity-0 scale-95' : 
-                  uploadOpen ? 'w-full' : 'w-1/2 opacity-100'
+                  uploadOpen ? 'w-full' : 'w-full sm:w-1/2 opacity-100'
                 }`}>
                   {!uploadOpen ? (
                     <ActionButton 
@@ -135,10 +129,6 @@ export default function SearchPage() {
                   ) : (
                     <div className="w-full animate-fade-in">
                       <FileUpload 
-                        onChange={(files) => {
-                          console.log('Files uploaded:', files)
-                          // Handle your file upload logic here
-                        }}
                         onCancel={() => setUploadOpen(false)}
                       />
                     </div>
@@ -146,7 +136,7 @@ export default function SearchPage() {
                 </div>
                 <div className={`transition-all duration-500 ease-in-out ${
                   uploadOpen ? 'w-0 opacity-0 scale-95' :
-                  searchOpen ? 'w-full' : 'w-1/2'
+                  searchOpen ? 'w-full' : 'w-full sm:w-1/2'
                 }`}>
                   {!searchOpen ? (
                     <ActionButton 
@@ -169,7 +159,7 @@ export default function SearchPage() {
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           placeholder={searchQuery ? "" : "What do you want to learn?"}
-                          className="w-full px-4 py-3 text-base bg-white dark:bg-gray-800 rounded-xl
+                          className="w-full px-4 py-3 text-sm sm:text-base bg-white dark:bg-gray-800 rounded-xl
                                     border border-gray-200 dark:border-gray-700
                                     focus:outline-none focus:ring-2 focus:ring-emerald-500/20
                                     focus:border-emerald-500 dark:focus:border-emerald-400
@@ -206,7 +196,7 @@ export default function SearchPage() {
                             setSearchOpen(false)
                             setSearchQuery('')
                           }}
-                          className="px-6 py-2 rounded-xl text-sm
+                          className="px-4 sm:px-6 py-2 rounded-xl text-xs sm:text-sm
                             bg-gray-100 dark:bg-gray-800 
                             text-gray-700 dark:text-gray-300
                             hover:bg-gray-200 dark:hover:bg-gray-700
@@ -214,21 +204,22 @@ export default function SearchPage() {
                         >
                           Cancel
                         </button>
+                        <Link href="/instruct">
                         <button
                           disabled={!searchQuery}
                           onClick={() => {
-                            // Handle search action
                             console.log('Searching for:', searchQuery)
                           }}
-                          className={`px-6 py-2 rounded-xl text-sm font-semibold
+                          className={`px-4 sm:px-6 py-2 rounded-xl text-xs sm:text-sm font-semibold
                             transition-all duration-300 ${
                             searchQuery
-                              ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                              ? `${BUTTON_GRADIENT} text-white hover:shadow-lg hover:-translate-y-0.5`
                               : "bg-gray-400 text-white cursor-not-allowed"
                           }`}
                         >
                           Search
                         </button>
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -239,7 +230,7 @@ export default function SearchPage() {
             {!uploadOpen && (
               <>
                 {searchOpen && (
-                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-2 gap-2 animate-fade-in">
+                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 animate-fade-in">
                     {suggestions.map((suggestion, index) => (
                       <button
                         key={index}
@@ -258,7 +249,7 @@ export default function SearchPage() {
                           {suggestion.icon}
                         </span>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-medium truncate">
+                          <span className="text-xs sm:text-sm font-medium truncate">
                             {suggestion.text}
                           </span>
                           <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -271,8 +262,8 @@ export default function SearchPage() {
                 )}
 
                 {!searchOpen && (
-                  <div className="mt-8 text-center animate-fade-in">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <div className="mt-6 sm:mt-8 text-center animate-fade-in">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                       Popular topics to explore:
                     </p>
                     <div className="flex flex-wrap justify-center gap-2">
@@ -283,7 +274,7 @@ export default function SearchPage() {
                             setSearchOpen(true)
                             setSearchQuery(suggestion.text)
                           }}
-                          className="px-3 py-1.5 rounded-full text-xs font-medium
+                          className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-medium
                                    bg-gray-200 dark:bg-gray-700 
                                    text-gray-700 dark:text-gray-300
                                    hover:bg-gray-300 dark:hover:bg-gray-600
@@ -301,14 +292,14 @@ export default function SearchPage() {
           </div>
 
           {!searchOpen && !uploadOpen && (
-            <div className="mt-8 flex justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-              <div className="flex items-center gap-2">
+            <div className="mt-6 hidden lg:flex sm:mt-8 flex justify-center items-center gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex justify-center items-center gap-2">
                 <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 
                                border border-gray-300 dark:border-gray-600 
                                text-xs font-mono transition-colors duration-300">/</kbd>
                 <span>to search</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex justify-center items-center gap-2">
                 <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 
                                border border-gray-300 dark:border-gray-600 
                                text-xs font-mono transition-colors duration-300">ESC</kbd>
@@ -345,7 +336,7 @@ function ActionButton({
         {icon}
       </span>
       <div className="flex flex-col items-start min-w-0">
-        <span className="text-sm font-medium truncate">{text}</span>
+        <span className="text-xs sm:text-sm font-medium truncate">{text}</span>
         <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
           {subtext}
         </span>
