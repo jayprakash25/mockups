@@ -45,7 +45,7 @@ export default function InstructionsPage() {
     handleSubmit()
 
     setTimeout(() => {
-      window.location.href = '/lessons'
+      window.location.href = '/chat'
     }, 6000)
   }
 

@@ -214,27 +214,33 @@ export default function FilePreview({ selectedFileId }: FilePreviewProps) {
   const selectedFile = mockFiles.find(file => file.id === selectedFileId)
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full bg-white dark:bg-gray-800/90 border-r border-emerald-500/20">
       <ScrollArea className="h-full">
-        <div className="p-4 lg:p-6">
+        <div className="p-6 lg:p-8">
           {selectedFile ? (
             <div className="prose prose-sm dark:prose-invert max-w-none">
-              <h1 className="text-xl lg:text-2xl font-bold mb-4 lg:mb-6">
+              <h1 className="text-2xl lg:text-3xl font-bold mb-6 lg:mb-8 bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
                 {selectedFile.title}
               </h1>
-              <div className="markdown-content">
+              <div className="markdown-content space-y-4">
                 {selectedFile.content.split('\n').map((line, index) => (
-                  <div key={index}>
+                  <div 
+                    key={index} 
+                    className="animate-in slide-in-from-bottom-1 duration-300 hover:translate-y-[-1px] transition-transform"
+                    style={{ animationDelay: `${index * 30}ms` }}
+                  >
                     {line.startsWith('```') ? (
-                      <pre className="bg-muted p-3 lg:p-4 rounded-lg text-sm">
+                      <pre className="bg-emerald-500/5 p-4 lg:p-5 rounded-xl text-sm shadow-sm border border-emerald-500/20">
                         <code>{line.replace(/```\w*/, '')}</code>
                       </pre>
                     ) : line.startsWith('#') ? (
-                      <h2 className="text-lg lg:text-xl font-semibold mt-3 lg:mt-4 mb-2">
+                      <h2 className="text-xl lg:text-2xl font-semibold mt-6 lg:mt-8 mb-3 bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
                         {line.replace(/^#+ /, '')}
                       </h2>
                     ) : (
-                      <p className="my-2 text-sm lg:text-base">{line}</p>
+                      <p className="my-2 text-sm lg:text-base text-foreground/80 leading-relaxed">
+                        {line}
+                      </p>
                     )}
                   </div>
                 ))}

@@ -99,7 +99,7 @@ export default function LessonPage() {
             
             <div className="prose dark:prose-invert max-w-none">
               <p className="text-gray-600 dark:text-gray-300 mb-8">
-                Adolf Hitler's rise to power marked one of the darkest chapters in human history, leading to World War II and the Holocaust. Understanding this period is crucial for preventing similar atrocities in the future and recognizing the warning signs of totalitarianism and extremism.
+                Adolf Hitler&apos;s rise to power marked one of the darkest chapters in human history, leading to World War II and the Holocaust. Understanding this period is crucial for preventing similar atrocities in the future and recognizing the warning signs of totalitarianism and extremism.
               </p>
 
               <section className="mb-8">
@@ -107,8 +107,8 @@ export default function LessonPage() {
                   Early Life and Entry into Politics
                 </h2>
                 <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>Born in Austria in 1889, Hitler moved to Germany in 1913. After serving in World War I, he joined the German Workers' Party (later renamed the Nazi Party) in 1919, quickly rising to become its leader.</p>
-                  <p>The failed Beer Hall Putsch of 1923 led to his imprisonment, during which he wrote "Mein Kampf," outlining his political ideology and future plans for Germany.</p>
+                  <p>Born in Austria in 1889, Hitler moved to Germany in 1913. After serving in World War I, he joined the German Workers&apos; Party (later renamed the Nazi Party) in 1919, quickly rising to become its leader.</p>
+                  <p>The failed Beer Hall Putsch of 1923 led to his imprisonment, during which he wrote &quot;Mein Kampf,&quot; outlining his political ideology and future plans for Germany.</p>
                 </div>
               </section>
 

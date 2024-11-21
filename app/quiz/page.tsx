@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Sample quiz data
 const quizData = [
@@ -37,6 +38,7 @@ const calculateProgress = (currentQuestion: number, totalQuestions: number) => {
 };
 
 export default function QuizPage() {
+    const router = useRouter();
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(quizData.length).fill(-1));
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -79,6 +81,7 @@ export default function QuizPage() {
 
     const handleFinish = () => {
         setIsComplete(true);
+        router.push('/lessons');
     };
 
     const handleAiSubmit = () => {

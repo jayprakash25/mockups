@@ -1,6 +1,7 @@
 'use client';
 
 import { Sidebar } from '@/components/app-sidebar';
+import { MinimalNav } from '@/components/MinimalNav';
 import { useRouter } from 'next/navigation';
 
 export default function AppLayout({
@@ -33,7 +34,8 @@ export default function AppLayout({
         onProfileClick={() => router.push('/profile')}
         onSettingsClick={() => router.push('/settings')}
       />
-      <main className="flex-1">
+      <main className="flex-1 pt-14">
+        <MinimalNav />
         {children}
       </main>
     </div>

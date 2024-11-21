@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FlashcardContent } from './FlashCardContent'
 import { Progress } from "@/components/ui/progress"
+import { cn } from '@/lib/utils'
 
 interface Flashcard {
   id: number
@@ -69,6 +70,7 @@ export const Flashcards: React.FC = () => {
           className="aspect-[3/2] perspective-1000"
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 300 }}
+          style={{ transformStyle: "preserve-3d" }}
         >
           <div className="relative w-full h-full transform-style-3d">
             <FlashcardContent

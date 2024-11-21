@@ -78,11 +78,10 @@ export function Sidebar({
     <div className="flex min-h-screen">
       {/* Mobile Toggle Button */}
       <Button
-        variant="default"
+        variant="ghost"
         size="icon"
         className={cn(
-          'fixed top-4 left-4 h-12 w-12 rounded-full shadow-lg z-50',
-          'lg:hidden',
+          'fixed top-2 left-2 h-12 w-12   z-50 lg:hidden bg-background',
           !collapsed && 'hidden'
         )}
         onClick={() => setCollapsed(false)}

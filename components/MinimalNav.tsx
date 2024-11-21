@@ -17,12 +17,7 @@ interface MinimalNavProps {
   brandName?: string
 }
 
-export function MinimalNav({ 
-  collapsed, 
-  setCollapsed, 
-  showSidebarToggle,
-  brandName 
-}: MinimalNavProps) {
+export function MinimalNav() {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -35,26 +30,8 @@ export function MinimalNav({
   ]
 
   return (
-    <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center justify-between px-2">
-        <div className="flex items-center gap-3">
-          {showSidebarToggle && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setCollapsed?.(!collapsed)}
-              className="h-8 w-8"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
-          )}
-          {(!collapsed && brandName) && (
-            <span className="text-xl font-semibold bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
-              {brandName}
-            </span>
-          )}
-        </div>
-
+    <header className="fixed top-0 right-0 h-14 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-30">
+      <div className="h-full flex items-center px-2">
         <nav className="flex gap-1.5">
           <TooltipProvider delayDuration={100}>
             {navItems.map((item) => {
