@@ -7,6 +7,43 @@ import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-van
 import { cn } from "@/lib/utils"
 import { motion } from 'framer-motion';
 
+const lessonContent = {
+  "1": {
+    content: {
+      intro: "Adolf Hitler&apos;s rise to power marked one of the darkest chapters in human history, leading to World War II and the Holocaust. Understanding this period is crucial for preventing similar atrocities in the future and recognizing the warning signs of totalitarianism and extremism.",
+      sections: [
+        {
+          title: "Early Life and Entry into Politics",
+          content: [
+            "Born in Austria in 1889, Hitler moved to Germany in 1913. After serving in World War I, he joined the German Workers&apos; Party (later renamed the Nazi Party) in 1919, quickly rising to become its leader.",
+            "The failed Beer Hall Putsch of 1923 led to his imprisonment, during which he wrote &quot;Mein Kampf,&quot; outlining his political ideology and future plans for Germany."
+          ]
+        },
+        {
+          title: "Rise to Power",
+          content: [
+            "The Great Depression of 1929 created conditions that Hitler exploited. He promised economic recovery and national restoration, gaining popular support through powerful speeches and propaganda.",
+            "In 1933, Hitler was appointed Chancellor of Germany. Through the Enabling Act, he quickly transformed the Weimar Republic into a dictatorship, establishing the Third Reich."
+          ]
+        },
+        {
+          title: "World War II and the Holocaust",
+          content: [
+            "Hitler&apos;s aggressive expansion policies led to the invasion of Poland in 1939, triggering World War II. His regime systematically persecuted and murdered millions in the Holocaust, particularly targeting Jewish people.",
+            "As Allied forces closed in on Berlin in 1945, Hitler committed suicide in his bunker. The war in Europe ended shortly after, leaving a devastated continent and lessons that continue to resonate today."
+          ]
+        },
+        {
+          title: "Historical Impact",
+          content: [
+            "The aftermath of Hitler&apos;s regime led to significant changes in international law, human rights policies, and global politics. The United Nations was established, and the world adopted the Universal Declaration of Human Rights to prevent future atrocities."
+          ]
+        }
+      ]
+    }
+  }
+};
+
 export default function LessonPage() {
   const router = useRouter();
   const params = useParams();
@@ -99,47 +136,20 @@ export default function LessonPage() {
             
             <div className="prose dark:prose-invert max-w-none">
               <p className="text-gray-600 dark:text-gray-300 mb-8">
-                Adolf Hitler&apos;s rise to power marked one of the darkest chapters in human history, leading to World War II and the Holocaust. Understanding this period is crucial for preventing similar atrocities in the future and recognizing the warning signs of totalitarianism and extremism.
+                {lessonContent["1"].content.intro}
               </p>
-
-              <section className="mb-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  Early Life and Entry into Politics
-                </h2>
-                <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>Born in Austria in 1889, Hitler moved to Germany in 1913. After serving in World War I, he joined the German Workers&apos; Party (later renamed the Nazi Party) in 1919, quickly rising to become its leader.</p>
-                  <p>The failed Beer Hall Putsch of 1923 led to his imprisonment, during which he wrote &quot;Mein Kampf,&quot; outlining his political ideology and future plans for Germany.</p>
-                </div>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  Rise to Power
-                </h2>
-                <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>The Great Depression of 1929 created conditions that Hitler exploited. He promised economic recovery and national restoration, gaining popular support through powerful speeches and propaganda.</p>
-                  <p>In 1933, Hitler was appointed Chancellor of Germany. Through the Enabling Act, he quickly transformed the Weimar Republic into a dictatorship, establishing the Third Reich.</p>
-                </div>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  World War II and the Holocaust
-                </h2>
-                <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>Hitlers aggressive expansion policies led to the invasion of Poland in 1939, triggering World War II. His regime systematically persecuted and murdered millions in the Holocaust, particularly targeting Jewish people.</p>
-                  <p>As Allied forces closed in on Berlin in 1945, Hitler committed suicide in his bunker. The war in Europe ended shortly after, leaving a devastated continent and lessons that continue to resonate today.</p>
-                </div>
-              </section>
-
-              <section className="mb-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  Historical Impact
-                </h2>
-                <div className="space-y-4 text-gray-600 dark:text-gray-300">
-                  <p>The aftermath of Hitlers regime led to significant changes in international law, human rights policies, and global politics. The United Nations was established, and the world adopted the Universal Declaration of Human Rights to prevent future atrocities.</p>
-                </div>
-              </section>
+              {lessonContent["1"].content.sections.map((section, index) => (
+                <section key={index} className="mb-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    {section.title}
+                  </h2>
+                  <div className="space-y-4 text-gray-600 dark:text-gray-300">
+                    {section.content.map((paragraph, pIndex) => (
+                      <p key={pIndex}>{paragraph}</p>
+                    ))}
+                  </div>
+                </section>
+              ))}
             </div>
           </div>
         </div>
@@ -261,18 +271,19 @@ const ArrowIcon = ({ className }: { className?: string }) => (
 );
 
 // Improved Keyboard Navigation with visual feedback
-const KeyboardNavigation = ({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) => {
-  
+interface KeyboardNavigationProps {
+  onPrev: () => void;
+  onNext: () => void;
+}
 
+const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({ onPrev, onNext }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         onPrev();
-     
       }
       if (e.key === 'ArrowRight') {
         onNext();
-      
       }
     };
 
@@ -280,7 +291,7 @@ const KeyboardNavigation = ({ onPrev, onNext }: { onPrev: () => void; onNext: ()
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onPrev, onNext]);
 
-
+  return null;
 };
 
 // Add a progress indicator component

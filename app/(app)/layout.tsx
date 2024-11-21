@@ -20,6 +20,7 @@ export default function AppLayout({
           email: 'john@example.com',
           avatarFallback: 'JD'
         }}
+        setCollapsed={() => {}}
         recentItems={[
           {
             id: 1,
