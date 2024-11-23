@@ -20,7 +20,7 @@ const PresentationViewer = () => {
   // Example presentation data
   const presentation = {
     title: "Introduction to Machine Learning",
-    totalSlides: 15,
+    totalSlides: 8,
     slides: [
       {
         id: 1,
@@ -77,6 +77,62 @@ const PresentationViewer = () => {
           </div>
         ),
         notes: "Supervised learning is a type of machine learning where the model is trained on a labeled dataset, meaning that the input data is paired with the correct output. The goal is to learn a mapping function that can predict the output for new, unseen data."
+      },
+      {
+        id: 5,
+        content: (
+          <div className="flex flex-col items-center justify-center h-full text-center p-4 sm:p-8">
+            <h1 className="text-xl sm:text-3xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+              Unsupervised Learning
+            </h1>
+            <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-300">
+              Finding Patterns in Unlabeled Data
+            </p>
+          </div>
+        ),
+        notes: "Unsupervised learning algorithms work with unlabeled data to discover hidden patterns or groupings. Common applications include clustering, dimensionality reduction, and anomaly detection. These techniques are particularly useful when we don't know what patterns we're looking for in advance."
+      },
+      {
+        id: 6,
+        content: (
+          <div className="flex flex-col items-center justify-center h-full text-center p-4 sm:p-8">
+            <h1 className="text-xl sm:text-3xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+              Reinforcement Learning
+            </h1>
+            <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-300">
+              Learning through Trial and Error
+            </p>
+          </div>
+        ),
+        notes: "Reinforcement learning is inspired by behavioral psychology, where an agent learns to make decisions by interacting with an environment. The agent receives rewards or penalties for its actions and learns to optimize its behavior to maximize cumulative rewards over time."
+      },
+      {
+        id: 7,
+        content: (
+          <div className="flex flex-col items-center justify-center h-full text-center p-4 sm:p-8">
+            <h1 className="text-xl sm:text-3xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+              Common Applications
+            </h1>
+            <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-300">
+              Real-world Uses of Machine Learning
+            </p>
+          </div>
+        ),
+        notes: "Machine learning is used in various real-world applications including image and speech recognition, natural language processing, recommendation systems, autonomous vehicles, medical diagnosis, and financial forecasting. These applications demonstrate the versatility and power of machine learning algorithms."
+      },
+      {
+        id: 8,
+        content: (
+          <div className="flex flex-col items-center justify-center h-full text-center p-4 sm:p-8">
+            <h1 className="text-xl sm:text-3xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+              Future Trends
+            </h1>
+            <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-300">
+              The Road Ahead in Machine Learning
+            </p>
+          </div>
+        ),
+        notes: "The future of machine learning is exciting with emerging trends like automated machine learning (AutoML), edge computing, interpretable AI, and quantum machine learning. These developments will make ML more accessible, efficient, and powerful while addressing current limitations and challenges."
       }
     ]
   };

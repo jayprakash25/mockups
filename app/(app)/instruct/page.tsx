@@ -1,33 +1,34 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, CheckCircle } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Toaster, toast } from 'sonner'
 import { InstructionsForm } from '@/components/instruct/InstructionForm'
 import AIAssistant from '@/components/instruct/Aiassistant'
-import { Toggle } from '@/components/instruct/Toggle'
 import { BUTTON_GRADIENT } from '@/lib/constants'
 import { MultiStepLoader } from '@/components/step-loader'
+import { useEffect } from 'react'
 
 export default function InstructionsPage() {
-  const [isPublisher, setIsPublisher] = useState(false)
   const [formData, setFormData] = useState({
     quizLength: 5,
     presentationLength: 10,
     instructions: ''
   })
-  const [showAIAssistant, setShowAIAssistant] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [currentStep, setCurrentStep] = useState(0)
+  
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        handleSubmit()
+      }
+    }
 
-  const steps = ['Lessons', 'Quiz', 'Flashcards']
-
-  const loadingStates = [
-    { text: 'Generating your lessons...' },
-    { text: 'Creating quiz questions...' },
-    { text: 'Preparing flashcards...' },
-  ]
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [])
 
   const handleSubmit = () => {
     console.log('Generating content with:', formData)
@@ -41,6 +42,7 @@ export default function InstructionsPage() {
   }
 
   const handleGenerate = () => {
+    if (isGenerating) return
     setIsGenerating(true)
     handleSubmit()
 
@@ -62,14 +64,10 @@ export default function InstructionsPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-3 sm:p-4 md:p-6 shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10">
-                <Toggle isPublisher={isPublisher} onToggle={() => setIsPublisher(!isPublisher)} />
-              </div>
-
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-3 sm:p-4 md:p-6 shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10">
                 <InstructionsForm
                   formData={{...formData, difficultyLevel: 'intermediate'}}
                   onChange={setFormData}
-                  isPublisher={isPublisher}
+                  step={5}
                 />
               </div>
 
@@ -80,7 +78,7 @@ export default function InstructionsPage() {
                   disabled={isGenerating}
                   className={`${BUTTON_GRADIENT} text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''} w-full sm:w-auto justify-center`}
                 >
-                  <span>{isPublisher ? 'Generate Content' : 'Start Learning'}</span>
+                  <span>Generate Content</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -93,7 +91,6 @@ export default function InstructionsPage() {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <AIAssistant 
-                isPublisher={isPublisher} 
                 onUpdateInstructions={handleAIUpdate}
               />
             </motion.div>

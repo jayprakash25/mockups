@@ -183,14 +183,14 @@ export default function ReportPage() {
           <div className="flex justify-center gap-4 pt-8">
             <Button
               variant="outline"
-              onClick={() => router.push('/quiz')}
+              onClick={() => router.push('/test/quiz')}
               className="gap-2"
             >
               <RotateCcw className="w-4 h-4" />
               Try Again
             </Button>
             <Button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/search')}
               className="gap-2"
             >
               <Home className="w-4 h-4" />

@@ -90,10 +90,6 @@ export default function OnePagersView() {
               </p>
             </div>
             
-            <Button className="gap-2" onClick={() => {}}>
-              <Plus className="h-4 w-4" />
-              New Reference
-            </Button>
           </div>
 
           {/* Search and Filter Bar */}

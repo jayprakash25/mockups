@@ -28,30 +28,34 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
-      <Card className="h-[90vh] shadow-lg bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden border-0">
+    <div className="h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
+      <Card className="h-[calc(100vh-2rem)] shadow-lg bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden border-0">
         <ResizablePanelGroup
           direction={isMobile ? "vertical" : "horizontal"}
           className="h-full rounded-xl"
         >
           <ResizablePanel
             defaultSize={isMobile ? 40 : 60}
+            minSize={25}
+            maxSize={75}
             className="transition-all duration-200 ease-in-out"
           >
-            <div className="h-full p-4">
+            <div className="h-full">
               <FilePreview selectedFileId={selectedFileId} />
             </div>
           </ResizablePanel>
           
           <ResizableHandle className="bg-slate-200 hover:bg-slate-300 transition-colors">
-            <div className="w-1 h-8 mx-auto bg-slate-300 rounded-full" />
+            <div className={`${isMobile ? 'h-1 w-8' : 'w-1 h-8'} bg-slate-300 rounded-full mx-auto`} />
           </ResizableHandle>
           
           <ResizablePanel
             defaultSize={isMobile ? 60 : 40}
+            minSize={25}
+            maxSize={75}
             className="transition-all duration-200 ease-in-out"
           >
-            <div className="h-full p-4">
+            <div className="h-full">
               <ChatSection />
             </div>
           </ResizablePanel>
