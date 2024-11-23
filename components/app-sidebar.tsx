@@ -1,87 +1,193 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import {
-  History,
-  Menu,
-  Plus,
-  Search,
-  Settings,
-  User,
-  Clock,
-  Book,
-} from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu'
 import {
-  Collapsible,
-  CollapsibleContent,
-  
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { SidebarProps } from '@/components/ui/sidebar/types';
-import { SidebarRecentItems } from '@/components/ui/sidebar/sidebar-recent-items';
-import { BUTTON_GRADIENT } from '@/lib/constants'
-import { usePathname } from 'next/navigation';
-import { lessons } from '@/data/lessons';
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { SidebarProps } from '@/types/sidebar'
+import { Menu, Settings, User, Book, MessageSquare, File, Brain, ChevronRight, Home, ClipboardList, FileText, GraduationCap, History, BarChart, PlusCircle } from 'lucide-react'
+
 export function Sidebar({
   brand,
   user,
-  recentItems = [],
   onNavigate,
-  onNewItem,
-  onSearch,
   onProfileClick,
   onSettingsClick,
   className,
   defaultCollapsed = false,
 }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
-  const [isMobile, setIsMobile] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(true);
-  const pathname = usePathname();
-  const isLessonsRoute = pathname.startsWith('/lessons');
-  const isSearchRoute = pathname.startsWith('/search');
+  const [collapsed, setCollapsed] = useState(defaultCollapsed)
+  const [isMobile, setIsMobile] = useState(false)
+  const [openSection, setOpenSection] = useState<string | null>(null)
+  const pathname = usePathname()
+
+  const isTestHub = pathname.startsWith('/test')
+  const isLearningHub = pathname.startsWith('/learn')
+  const isDashboard = pathname === '/dashboard'
+
+  // Learning Hub Content
+  const learningItems = [
+    {
+      path: '/learn/lessons',
+      icon: Book,
+      label: 'Lessons',
+      subitems: [
+        {
+          category: "Fundamentals",
+          items: [
+            { path: '/learn/lessons/intro', label: 'Introduction to ML' },
+            { path: '/learn/lessons/python', label: 'Python Basics' },
+            { path: '/learn/lessons/data', label: 'Data Processing' }
+          ]
+        },
+        {
+          category: "Advanced Topics",
+          items: [
+            { path: '/learn/lessons/neural', label: 'Neural Networks' },
+            { path: '/learn/lessons/deep', label: 'Deep Learning' },
+            { path: '/learn/lessons/nlp', label: 'Natural Language Processing' }
+          ]
+        }
+      ]
+    },
+    { path: '/learn/flashcards', icon: Brain, label: 'Flashcards' },
+    { path: '/learn/presentation', icon: File, label: 'Presentations' },
+    { path: '/learn/cheatsheet', icon: FileText, label: 'Cheatsheet' },
+    { path: '/learn/chat', icon: MessageSquare, label: 'Chat' },
+  ]
+
+  // Test Hub Content
+  const testItems = [
+    { path: '/test/quiz', icon: ClipboardList, label: 'Take Quiz' },
+    { path: '/test/history', icon: History, label: 'Quiz History' },
+    { path: '/test/report', icon: BarChart, label: 'Performance' },
+  ]
+
+  const getCurrentHubItems = () => {
+    if (isTestHub) return testItems
+    if (isLearningHub) return learningItems
+    return []
+  }
 
   useEffect(() => {
     const checkMobile = () => {
-      const isMobileView = window.innerWidth <= 768;
-      setIsMobile(isMobileView);
-      if (isMobileView) {
-        setCollapsed(true);
+      setIsMobile(window.innerWidth <= 768)
+      if (window.innerWidth <= 768) {
+        setCollapsed(true)
       }
-    };
+    }
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const handleNavigate = (path: string) => {
-    onNavigate?.(path);
-    if (isMobile) {
-      setCollapsed(true);
+    onNavigate?.(path)
+    if (isMobile) setCollapsed(true)
+  }
+
+  const renderNavItem = (item: any) => {
+    const isActive = pathname.startsWith(item.path)
+    const isOpen = openSection === item.path
+
+    if (item.subitems) {
+      return (
+        <div key={item.path} className="space-y-1">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className={cn(
+                  'w-full justify-between',
+                  collapsed && 'justify-center',
+                  isActive && 'bg-primary/10'
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <item.icon className="h-4 w-4" />
+                  {!collapsed && <span>{item.label}</span>}
+                </div>
+                {!collapsed && <ChevronRight className="h-4 w-4" />}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align={collapsed ? 'right' : 'left'}
+              className="w-64"
+            >
+              {item.subitems.map((category: any, idx: number) => (
+                <div key={idx}>
+                  <DropdownMenuLabel className="text-xs text-muted-foreground">
+                    {category.category}
+                  </DropdownMenuLabel>
+                  {category.items.map((subitem: any) => (
+                    <DropdownMenuItem
+                      key={subitem.path}
+                      onClick={() => handleNavigate(subitem.path)}
+                    >
+                      {subitem.label}
+                    </DropdownMenuItem>
+                  ))}
+                  {idx < item.subitems.length - 1 && <DropdownMenuSeparator />}
+                </div>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )
     }
-  };
+
+    return (
+      <TooltipProvider key={item.path}>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              className={cn(
+                'w-full justify-start gap-3',
+                collapsed && 'justify-center',
+                pathname === item.path && 'bg-primary/10'
+              )}
+              onClick={() => handleNavigate(item.path)}
+            >
+              <item.icon className="h-4 w-4" />
+              {!collapsed && <span>{item.label}</span>}
+            </Button>
+          </TooltipTrigger>
+          {collapsed && (
+            <TooltipContent side="right">
+              {item.label}
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
 
   return (
     <div className="flex min-h-screen">
-      {/* Mobile Toggle Button */}
+      {/* Mobile Menu Button */}
       <Button
         variant="ghost"
         size="icon"
         className={cn(
-          'fixed top-2 left-2 h-12 w-12   z-50 lg:hidden bg-background',
+          'fixed top-2 left-2 h-12 w-12 z-50 lg:hidden bg-background',
           !collapsed && 'hidden'
         )}
         onClick={() => setCollapsed(false)}
@@ -97,27 +203,26 @@ export function Sidebar({
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 flex h-screen flex-col border-r bg-background transition-all duration-300 z-40',
-          collapsed ? 'w-0 lg:w-16 -translate-x-full lg:translate-x-0' : 'w-72',
-          'overflow-hidden',
+          'fixed left-0 top-0 flex h-screen flex-col border-r bg-gradient-to-b from-background to-background/95 backdrop-blur transition-all duration-300 ease-in-out z-40',
+          collapsed ? 'w-16' : 'w-64',
+          isMobile && collapsed ? '-translate-x-full' : 'translate-x-0',
           className
         )}
       >
-        {/* Brand Header */}
+        {/* Header */}
         <div className="flex h-16 items-center justify-between px-4">
           {!collapsed && (
             <span className="text-xl font-semibold bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent">
-              {brand.name}
+              {isTestHub ? 'Test Hub' : isLearningHub ? 'Learning Hub' : 'Dashboard'}
             </span>
           )}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setCollapsed(!collapsed)}
-            className="h-8 w-8"
+            className="h-8 w-8 lg:flex hidden"
           >
             <Menu className="h-4 w-4" />
           </Button>
@@ -125,162 +230,130 @@ export function Sidebar({
 
         <Separator />
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-            {/* Main Actions */}
-            <div className="p-2 space-y-2">
-              {!isSearchRoute && (
+        {/* Hub Switcher */}
+        {(isTestHub || isLearningHub || isDashboard) && (
+          <div className="p-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
-                  variant="default"
+                  variant="outline"
                   className={cn(
-                    `w-full justify-start gap-3 ${BUTTON_GRADIENT} text-white hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300`,
+                    'w-full justify-between',
                     collapsed && 'justify-center'
                   )}
-                  onClick={onNewItem}
                 >
-                  <Plus className="h-4 w-4" />
-                  {!collapsed && <span>New Item</span>}
+                  <div className="flex items-center gap-2">
+                    {isTestHub ? (
+                      <ClipboardList className="h-4 w-4" />
+                    ) : isLearningHub ? (
+                      <GraduationCap className="h-4 w-4" />
+                    ) : (
+                      <Home className="h-4 w-4" />
+                    )}
+                    {!collapsed && <span>{isTestHub ? 'Test Hub' : isLearningHub ? 'Learning Hub' : 'Dashboard'}</span>}
+                  </div>
+                  {!collapsed && <ChevronRight className="h-4 w-4" />}
                 </Button>
-              )}
-              
-              <Button
-                variant="ghost"
-                className={cn(
-                  'w-full justify-start gap-3',
-                  collapsed && 'justify-center'
-                )}
-                onClick={onSearch}
-              >
-                <Search className="h-4 w-4" />
-                {!collapsed && <span>Search</span>}
-              </Button>
-            </div>
-
-            <Separator className="my-2" />
-
-            {/* Lessons Section - Only show when in lessons route */}
-            {!collapsed && isLessonsRoute && (
-              <div className="flex-1 flex flex-col min-h-0">
-                <Collapsible
-                  defaultOpen
-                  className="px-2"
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-between p-2"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Book className="h-4 w-4" />
-                        <span className="font-medium">Lessons</span>
-                      </div>
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="space-y-1">
-                      {lessons.map((lesson) => (
-                        <Button
-                          key={lesson.id}
-                          variant="ghost"
-                          className={cn(
-                            'w-full justify-start text-sm px-2',
-                            pathname === `/lessons/${lesson.id}` && 'bg-primary/10'
-                          )}
-                          onClick={() => handleNavigate(`/lessons/${lesson.id}`)}
-                        >
-                          {lesson.title.slice(0, 20)}...
-                        </Button>
-                      ))}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              </div>
-            )}
-
-            {/* Recent Items - Only show when not in lessons route */}
-            {!collapsed && recentItems.length > 0 && !isLessonsRoute && (
-              <div className="flex-1 flex flex-col min-h-0">
-                <Collapsible
-                  open={historyOpen}
-                  onOpenChange={setHistoryOpen}
-                  className="px-2"
-                >
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-between p-2"
-                    >
-                      <div className="flex items-center gap-2">
-                        <History className="h-4 w-4" />
-                        <span className="font-medium">Recent</span>
-                      </div>
-                      <Clock className="h-3 w-3" />
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarRecentItems
-                      items={recentItems}
-                      onItemClick={(id) => handleNavigate(`/view/${id}`)}
-                    />
-                  </CollapsibleContent>
-                </Collapsible>
-              </div>
-            )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => handleNavigate('/learn')}>
+                  <GraduationCap className="mr-2 h-4 w-4" />
+                  Learning Hub
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigate('/test/quiz')}>
+                  <ClipboardList className="mr-2 h-4 w-4" />
+                  Test Hub
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => handleNavigate('/dashboard')}>
+                  <Home className="mr-2 h-4 w-4" />
+                  Dashboard
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
+        )}
 
-          {/* User Profile - Now will stick to bottom */}
-          <div>
-            <Separator />
-            <div className="p-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      'w-full justify-start gap-3 px-2',
-                      collapsed && 'justify-center'
-                    )}
-                  >
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={user.avatarUrl} />
-                      <AvatarFallback>{user.avatarFallback}</AvatarFallback>
-                    </Avatar>
-                    {!collapsed && (
-                      <div className="flex flex-col items-start text-sm">
-                        <span className="font-medium">{user.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {user.email}
-                        </span>
-                      </div>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={onProfileClick}>
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={onSettingsClick}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+        {/* Navigation Items */}
+        <div className="flex-1 flex flex-col justify-between py-4 overflow-y-auto">
+          <nav className="space-y-2 px-2">
+            {getCurrentHubItems().map(renderNavItem)}
+            {pathname !== '/search' && (
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={cn(
+                        'w-full justify-start gap-3',
+                        collapsed && 'justify-center'
+                      )}
+                      onClick={() => handleNavigate('/search')}
+                    >
+                      <PlusCircle className="h-4 w-4" />
+                      {!collapsed && <span>Add New</span>}
+                    </Button>
+                  </TooltipTrigger>
+                  {collapsed && (
+                    <TooltipContent side="right">
+                      Add New
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </nav>
+
+          {/* Profile Section */}
+          <div className="px-2 mt-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start gap-3',
+                    collapsed && 'justify-center'
+                  )}
+                >
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={user?.avatarUrl} />
+                    <AvatarFallback>{user?.avatarFallback}</AvatarFallback>
+                  </Avatar>
+                  {!collapsed && (
+                    <div className="flex flex-col items-start text-sm">
+                      <span className="font-medium">{user?.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {user?.email}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onProfileClick}>
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onSettingsClick}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </aside>
 
-      {/* Main content wrapper */}
       <main className={cn(
-        'flex-1 transition-all duration-300',
-        collapsed ? 'lg:ml-16' : 'lg:ml-72'
+        'flex-1 transition-all duration-300 ease-in-out',
+        collapsed ? 'lg:ml-16' : 'lg:ml-64',
+        isMobile && 'ml-0'
       )}>
-        {/* Your main content goes here */}
+        {/* Main content */}
       </main>
     </div>
-  );
+  )
 }
+

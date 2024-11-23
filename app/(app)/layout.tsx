@@ -35,8 +35,8 @@ export default function AppLayout({
         onProfileClick={() => router.push('/profile')}
         onSettingsClick={() => router.push('/settings')}
       />
-      <main className="flex-1 pt-14">
-        <MinimalNav />
+      <main className="flex-1">
+        {/* <MinimalNav /> */}
         {children}
       </main>
     </div>

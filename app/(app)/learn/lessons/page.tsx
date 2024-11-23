@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
 export default function LessonsPage() {
-  redirect('/lessons/1');
+  redirect('lessons/1');
 }

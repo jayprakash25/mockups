@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { ChatSection } from '@/components/chat/ChatSection';
-
 import FilePreview from '@/components/chat/FilePreview';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Card } from "@/components/ui/card";
 
 export default function ChatPage() {
-  const [selectedFileId, setSelectedFileId] = useState<string>('1');
+  const [selectedFileId, setSelectedFileId] = useState('1');
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -28,27 +28,35 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 flex relative">
-        <div className="flex-1 flex flex-col lg:flex-row">
-          <ResizablePanelGroup 
-            direction={isMobile ? "vertical" : "horizontal"}
-            className="w-full"
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
+      <Card className="h-[90vh] shadow-lg bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden border-0">
+        <ResizablePanelGroup
+          direction={isMobile ? "vertical" : "horizontal"}
+          className="h-full rounded-xl"
+        >
+          <ResizablePanel
+            defaultSize={isMobile ? 40 : 60}
+            className="transition-all duration-200 ease-in-out"
           >
-            <ResizablePanel 
-              defaultSize={isMobile ? 40 : 60} 
-              className="min-h-[200px] border-b lg:border-b-0 lg:border-r"
-            >
+            <div className="h-full p-4">
               <FilePreview selectedFileId={selectedFileId} />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={isMobile ? 60 : 40}>
+            </div>
+          </ResizablePanel>
+          
+          <ResizableHandle className="bg-slate-200 hover:bg-slate-300 transition-colors">
+            <div className="w-1 h-8 mx-auto bg-slate-300 rounded-full" />
+          </ResizableHandle>
+          
+          <ResizablePanel
+            defaultSize={isMobile ? 60 : 40}
+            className="transition-all duration-200 ease-in-out"
+          >
+            <div className="h-full p-4">
               <ChatSection />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
-      </div>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </Card>
     </div>
   );
 }
-

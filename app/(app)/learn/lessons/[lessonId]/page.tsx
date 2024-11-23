@@ -75,7 +75,7 @@ export default function LessonPage() {
     const nextIndex = direction === 'next' ? currentLessonIndex + 1 : currentLessonIndex - 1;
     
     if (nextIndex >= 0 && nextIndex < lessons.length) {
-      router.push(`/lessons/${lessons[nextIndex].id}`);
+      router.push(`/learn/lessons/${lessons[nextIndex].id}`);
     }
   };
 
