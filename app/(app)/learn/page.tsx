@@ -46,7 +46,7 @@ const LearningHub = () => {
       title: "Quick References",
       description: "One-page summaries and cheatsheets",
       stats: "5 guides • Key points",
-      href: "/references",
+      href: "/learn/cheatsheet",
       color: "text-pink-500"
     }
   ];

@@ -63,9 +63,22 @@ const LoaderCore = ({
               "text-left flex gap-3 mb-2 px-4 py-2 rounded-lg",
               interactive && "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
             )}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: opacity, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ 
+              opacity: opacity, 
+              y: 0, 
+              scale: index === value ? 1.05 : 1,
+              x: index === value ? 10 : 0
+            }}
+            transition={{ 
+              duration: 0.5,
+              ease: "easeOut",
+              scale: {
+                type: "spring",
+                stiffness: 200,
+                damping: 15
+              }
+            }}
             onClick={() => interactive && onStepClick?.(index)}
           >
             <div className="relative">
@@ -73,7 +86,11 @@ const LoaderCore = ({
                 className="absolute inset-0 bg-emerald-100 dark:bg-emerald-900/30 rounded-full"
                 initial={{ scale: 0 }}
                 animate={{ scale: index <= value ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20
+                }}
               />
               {index > value ? (
                 <CheckIcon className="text-emerald-500 dark:text-emerald-400 relative z-10" />

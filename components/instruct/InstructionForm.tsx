@@ -13,10 +13,10 @@ interface FormData {
 interface InstructionsFormProps {
   formData: FormData
   onChange: (data: FormData) => void
-  isPublisher: boolean
+  step: number
 }
 
-export function InstructionsForm({ formData, onChange, isPublisher }: InstructionsFormProps) {
+export function InstructionsForm({ formData, onChange, step }: InstructionsFormProps) {
   const difficultyOptions = [
     { value: 'beginner', label: 'Beginner', color: 'emerald' },
     { value: 'intermediate', label: 'Intermediate', color: 'blue' },
@@ -58,8 +58,10 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
             <input
               type="range"
               min="5"
-              max="20"
-              step="5"
+
+              max="50"
+              step={step}
+
               value={formData.quizLength}
               onChange={(e) => handleRangeChange('quizLength', parseInt(e.target.value))}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer
@@ -84,7 +86,9 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
               type="range"
               min="5"
               max="30"
-              step="5"
+
+              step={step}
+
               value={formData.presentationLength}
               onChange={(e) => handleRangeChange('presentationLength', parseInt(e.target.value))}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer
@@ -149,14 +153,12 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
         >
           <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             <Sparkles className="w-4 h-4 text-emerald-500" />
-            {isPublisher ? "Special Instructions" : "Learning Preferences"}
+            {" Preferences"}
           </label>
           <textarea
             value={formData.instructions}
             onChange={(e) => onChange({ ...formData, instructions: e.target.value })}
-            placeholder={isPublisher 
-              ? "Describe your content goals, target audience, and any specific requirements..."
-              : "Tell us your learning style, areas of focus, and what you hope to achieve..."
+            placeholder={"Tell us your learning style, areas of focus, and what you hope to achieve..."
             }
             rows={4}
             className="w-full px-4 py-3 rounded-xl

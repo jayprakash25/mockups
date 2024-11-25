@@ -20,15 +20,7 @@ export default function AppLayout({
           email: 'john@example.com',
           avatarFallback: 'JD'
         }}
-        setCollapsed={() => {}}
-        recentItems={[
-          {
-            id: 1,
-            title: 'React Basics',
-            type: 'quiz',
-            date: '2h ago'
-          }
-        ]}
+        
         onNavigate={(path) => router.push(path)}
         onNewItem={() => router.push('/search')}
         onSearch={() => router.push('/search')}

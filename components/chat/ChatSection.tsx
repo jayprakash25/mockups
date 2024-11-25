@@ -41,7 +41,7 @@ export function ChatSection() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   };
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export function ChatSection() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] bg-background/95 backdrop-blur-sm">
+    <div className="flex flex-col h-full bg-background/95 backdrop-blur-sm relative">
       {/* Chat Header */}
       <div className="border-b px-4 py-3 bg-background/50 backdrop-blur-sm">
         <h2 className="text-lg font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
@@ -93,8 +93,8 @@ export function ChatSection() {
       </div>
 
       {/* Messages Area - Fixed Height */}
-      <ScrollArea className="flex-1 px-4 h-[calc(100vh-12rem)]">
-        <div className="flex flex-col gap-4 lg:gap-6 py-4 lg:py-6">
+      <ScrollArea className="flex-1 px-4 pb-24">
+        <div className="flex flex-col gap-4 lg:gap-6 py-4 lg:py-6 mb-4">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -146,8 +146,8 @@ export function ChatSection() {
       </ScrollArea>
 
       {/* Input Area - Fixed at Bottom */}
-      <div className="border-t bg-background/50 backdrop-blur-sm p-4 sticky bottom-0">
-        <div className="flex gap-2 max-w-4xl mx-auto">
+      <div className="border-t bg-white/95 backdrop-blur-sm p-4 fixed bottom-0 left-0 right-0 z-10 shadow-lg">
+      <div className="flex gap-2 max-w-4xl mx-auto">
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}

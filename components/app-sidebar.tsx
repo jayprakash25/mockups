@@ -30,7 +30,7 @@ export function Sidebar({
   onProfileClick,
   onSettingsClick,
   className,
-  defaultCollapsed = false,
+  defaultCollapsed = true,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [isMobile, setIsMobile] = useState(false)
@@ -69,13 +69,26 @@ export function Sidebar({
     { path: '/learn/flashcards', icon: Brain, label: 'Flashcards' },
     { path: '/learn/presentation', icon: File, label: 'Presentations' },
     { path: '/learn/cheatsheet', icon: FileText, label: 'Cheatsheet' },
-    { path: '/learn/chat', icon: MessageSquare, label: 'Chat' },
+    {
+      path: '/learn/chat',
+      icon: MessageSquare,
+      label: 'Chat',
+      subitems: [
+        {
+          items: [
+            { path: '/learn/chat/', label: 'React Optimization' },
+            { path: '/learn/chat/', label: 'Python Help Thread' },
+            { path: '/learn/chat/', label: 'Data Analysis Questions' },
+            { path: '/learn/chat/', label: 'Neural Networks Chat' }
+          ]
+        }
+      ]
+    },
   ]
 
   // Test Hub Content
   const testItems = [
     { path: '/test/quiz', icon: ClipboardList, label: 'Take Quiz' },
-    { path: '/test/history', icon: History, label: 'Quiz History' },
     { path: '/test/report', icon: BarChart, label: 'Performance' },
   ]
 
@@ -97,6 +110,10 @@ export function Sidebar({
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  useEffect(() => {
+    setCollapsed(window.innerWidth <= 768)
+  }, [pathname])
 
   const handleNavigate = (path: string) => {
     onNavigate?.(path)
@@ -128,7 +145,7 @@ export function Sidebar({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              align={collapsed ? 'right' : 'left'}
+              align={collapsed ? 'end' : 'start'}
               className="w-64"
             >
               {item.subitems.map((category: any, idx: number) => (
@@ -170,7 +187,7 @@ export function Sidebar({
               {!collapsed && <span>{item.label}</span>}
             </Button>
           </TooltipTrigger>
-          {collapsed && (
+          {collapsed && !isMobile && (
             <TooltipContent side="right">
               {item.label}
             </TooltipContent>
@@ -291,12 +308,12 @@ export function Sidebar({
                       onClick={() => handleNavigate('/search')}
                     >
                       <PlusCircle className="h-4 w-4" />
-                      {!collapsed && <span>Add New</span>}
+                      {!collapsed && <span>New Course</span>}
                     </Button>
                   </TooltipTrigger>
-                  {collapsed && (
+                  {collapsed && !isMobile && (
                     <TooltipContent side="right">
-                      Add New
+                      New Course
                     </TooltipContent>
                   )}
                 </Tooltip>
