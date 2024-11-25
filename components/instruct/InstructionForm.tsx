@@ -1,3 +1,5 @@
+"use client"
+
 import { motion } from 'framer-motion'
 import { Sliders, Sparkles, BarChart2 } from 'lucide-react'
 
@@ -20,6 +22,12 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
     { value: 'intermediate', label: 'Intermediate', color: 'blue' },
     { value: 'advanced', label: 'Advanced', color: 'purple' }
   ]
+
+  const handleRangeChange = (field: 'quizLength' | 'presentationLength', value: number) => {
+    // Round to nearest multiple of 5
+    const roundedValue = Math.round(value / 5) * 5
+    onChange({ ...formData, [field]: roundedValue })
+  }
 
   return (
     <motion.div 
@@ -49,15 +57,22 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
             </label>
             <input
               type="range"
-              min="1"
+              min="5"
               max="20"
+              step="5"
               value={formData.quizLength}
-              onChange={(e) => onChange({ ...formData, quizLength: parseInt(e.target.value) })}
+              onChange={(e) => handleRangeChange('quizLength', parseInt(e.target.value))}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer
                        bg-gradient-to-r from-emerald-200 to-blue-200
                        dark:from-emerald-900/50 dark:to-blue-900/50
                        accent-emerald-500"
             />
+            <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>5</span>
+              <span>10</span>
+              <span>15</span>
+              <span>20</span>
+            </div>
           </div>
 
           <div className="relative group">
@@ -69,13 +84,20 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
               type="range"
               min="5"
               max="30"
+              step="5"
               value={formData.presentationLength}
-              onChange={(e) => onChange({ ...formData, presentationLength: parseInt(e.target.value) })}
+              onChange={(e) => handleRangeChange('presentationLength', parseInt(e.target.value))}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer
                        bg-gradient-to-r from-emerald-200 to-blue-200
                        dark:from-emerald-900/50 dark:to-blue-900/50
                        accent-emerald-500"
             />
+            <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>5</span>
+              <span>15</span>
+              <span>25</span>
+              <span>30</span>
+            </div>
           </div>
         </motion.div>
 
@@ -152,3 +174,4 @@ export function InstructionsForm({ formData, onChange, isPublisher }: Instructio
     </motion.div>
   )
 }
+
