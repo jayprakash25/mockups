@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { AIAssistantDock } from '@/components/instruct/AIAssistantDock'
 import { BUTTON_GRADIENT } from '@/lib/constants'
 import { MultiStepLoader } from '@/components/step-loader'
-import QuizLoader from '@/components/animate'
+
 // import { ResourceCard } from '@/components/ResourceCard'
 
 export default function InstructionsPage() {
@@ -94,7 +94,7 @@ export default function InstructionsPage() {
   return (
     <main className="min-h-screen ">
       <Toaster position="top-center" />
-      <QuizLoader onComplete={() => console.log('Animation completed!')}/>
+ 
       <div className="min-h-screen p-4 sm:p-6 md:p-8 flex flex-col items-center justify-start">
         <div className="w-full max-w-2xl">
           <header className="text-center mb-8">
@@ -305,15 +305,15 @@ interface ResourceCardProps {
   onChange: () => void;
 }
 
-function ResourceCard({ icon, title, description, checked, onChange }: ResourceCardProps) {
+export function ResourceCard({ icon, title, description, checked, onChange }: ResourceCardProps) {
   return (
     <Card className="flex items-center p-4 cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors" onClick={onChange}>
-      <div className="mr-3">{icon}</div>
-      <div className="flex-grow">
+      <div className="mr-3 flex-shrink-0">{icon}</div>
+      <div className="flex-grow mr-4">
         <h3 className="text-sm font-medium">{title}</h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{description}</p>
       </div>
-      <Checkbox checked={checked} onCheckedChange={onChange} />
+      <Checkbox checked={checked} onCheckedChange={onChange} className="flex-shrink-0" />
     </Card>
   )
 }

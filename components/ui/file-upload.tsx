@@ -228,7 +228,11 @@ export const FileUpload = ({
         {isQuizMode ? (
           <button
             disabled={!ctaEnabled}
-            onClick={() => onGenerateQuiz && onGenerateQuiz()}
+            onClick={() => {
+              if (onGenerateQuiz) {
+                onGenerateQuiz();
+              }
+            }}
             className={`w-full px-4 py-2 rounded-xl text-sm font-semibold
               transition-all duration-300 ${
               ctaEnabled
