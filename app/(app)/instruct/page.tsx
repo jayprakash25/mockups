@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowRight, BookOpen, WalletCardsIcon as Cards, FileText, MessageCircle, Save, X, Plus, Minus } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+
 import { Toaster, toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
-import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,8 +20,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { AIAssistantDock } from '@/components/instruct/AIAssistantDock'
 import { BUTTON_GRADIENT } from '@/lib/constants'
 import { MultiStepLoader } from '@/components/step-loader'
-
-// import { ResourceCard } from '@/components/ResourceCard'
 
 export default function InstructionsPage() {
   const [formData, setFormData] = useState({
@@ -305,7 +302,7 @@ interface ResourceCardProps {
   onChange: () => void;
 }
 
-export function ResourceCard({ icon, title, description, checked, onChange }: ResourceCardProps) {
+function ResourceCard({ icon, title, description, checked, onChange }: ResourceCardProps) {
   return (
     <Card className="flex items-center p-4 cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors" onClick={onChange}>
       <div className="mr-3 flex-shrink-0">{icon}</div>
