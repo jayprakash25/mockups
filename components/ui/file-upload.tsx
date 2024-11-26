@@ -31,9 +31,13 @@ const secondaryVariant = {
 export const FileUpload = ({
   onChange,
   onCancel,
+  isQuizMode = false,
+  onGenerateQuiz,
 }: {
   onChange?: (files: File[]) => Promise<void>
   onCancel?: () => void
+  isQuizMode?: boolean
+  onGenerateQuiz?: () => void
 }) => {
   const [files, setFiles] = useState<File[]>([])
   const [ctaEnabled, setCtaEnabled] = useState(false)
@@ -91,7 +95,9 @@ export const FileUpload = ({
           <p className="relative z-20 font-sans font-normal text-neutral-400 dark:text-neutral-400 text-sm sm:text-base mt-2 text-center">
             {files.length > 0 
               ? 'Drag more files here or click to upload'
-              : 'Drag or drop your files here or click to upload'
+              : isQuizMode
+                ? "Upload your study materials and we'll create an instant quiz."
+                : 'Add your files and let us create personalized quizzes and resources.'
             }
           </p>
         </div>
@@ -219,9 +225,10 @@ export const FileUpload = ({
         </div>
       </motion.div>
       <div className="flex flex-col gap-3 mt-6">
-        <Link href="/instruct">
+        {isQuizMode ? (
           <button
             disabled={!ctaEnabled}
+            onClick={() => onGenerateQuiz && onGenerateQuiz()}
             className={`w-full px-4 py-2 rounded-xl text-sm font-semibold
               transition-all duration-300 ${
               ctaEnabled
@@ -229,9 +236,23 @@ export const FileUpload = ({
                 : "bg-gray-400 text-white cursor-not-allowed"
             }`}
           >
-            Next
+            Generate Quiz
           </button>
-        </Link>
+        ) : (
+          <Link href="/instruct">
+            <button
+              disabled={!ctaEnabled}
+              className={`w-full px-4 py-2 rounded-xl text-sm font-semibold
+                transition-all duration-300 ${
+                ctaEnabled
+                  ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                  : "bg-gray-400 text-white cursor-not-allowed"
+              }`}
+            >
+              Next
+            </button>
+          </Link>
+        )}
         <button 
           onClick={onCancel}
           className="w-full px-4 py-2 rounded-xl text-sm
