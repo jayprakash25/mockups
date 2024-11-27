@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ArrowRight, BookOpen, WalletCardsIcon as Cards, FileText, MessageCircle, Save, X, Plus, Minus } from 'lucide-react'
 
 import { Toaster, toast } from 'sonner'
@@ -36,7 +36,18 @@ export default function InstructionsPage() {
     flashcardInstructions: '',
     cheatsheetInstructions: '',
     chatInstructions: '',
-    instructions: ''
+    instructions: '',
+    lessonMainTopic: '',
+    lessonSubtopic: '',
+    lessonSubtopics: [],
+    flashcardCount: 20,
+    flashcardType: 'term-definition',
+    cheatsheetTitle: '',
+    cheatsheetFormat: 'bullet-points',
+    cheatsheetKeyPoints: '',
+    enableFollowUpQuestions: false,
+    provideSources: false,
+    chatSupportFocus: ''
   })
   const [isGenerating, setIsGenerating] = useState(false)
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
@@ -88,6 +99,23 @@ export default function InstructionsPage() {
     })
   }
 
+  const handleAddSubtopic = (type: 'lesson') => {
+    if (formData[`${type}Subtopic`].trim()) {
+      setFormData(prev => ({
+        ...prev,
+        [`${type}Subtopics`]: [...prev[`${type}Subtopics`], prev[`${type}Subtopic`]],
+        [`${type}Subtopic`]: ''
+      }))
+    }
+  }
+
+  const handleRemoveSubtopic = (type: 'lesson', index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      [`${type}Subtopics`]: prev[`${type}Subtopics`].filter((_, i) => i !== index)
+    }))
+  }
+
   return (
     <main className="min-h-screen ">
       <Toaster position="top-center" />
@@ -129,27 +157,35 @@ export default function InstructionsPage() {
                           value={formData.quizTitle}
                           onChange={(e) => handleInputChange('quizTitle', e.target.value)}
                         />
-                        <div className="flex items-center justify-between">
-                          <label className="text-sm font-medium">Number of Questions:</label>
-                          <NumberInput
-                            value={formData.quizLength}
-                            onIncrement={() => handleNumberChange('quizLength', true)}
-                            onDecrement={() => handleNumberChange('quizLength', false)}
-                          />
+                        
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium block">Question Format:</label>
+                          <Select
+                            value={formData.quizType}
+                            onValueChange={(value) => handleInputChange('quizType', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select question type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
+                              <SelectItem value="true-false">True/False</SelectItem>
+                              <SelectItem value="short-answer">Short Answer</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
-                        <Select
-                          value={formData.quizType}
-                          onValueChange={(value) => handleInputChange('quizType', value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select quiz type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-                            <SelectItem value="true-false">True/False</SelectItem>
-                            <SelectItem value="short-answer">Short Answer</SelectItem>
-                          </SelectContent>
-                        </Select>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium block">Number of Questions:</label>
+                          <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 p-2 rounded-md">
+                            <span className="text-sm text-gray-600 dark:text-gray-300">Select how many questions to generate</span>
+                            <NumberInput
+                              value={formData.quizLength}
+                              onIncrement={() => handleNumberChange('quizLength', true)}
+                              onDecrement={() => handleNumberChange('quizLength', false)}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </section>
 
@@ -222,32 +258,122 @@ export default function InstructionsPage() {
                       <h2 className="text-xl font-semibold mb-4 text-emerald-700 dark:text-emerald-300">Resource Customization</h2>
                       <div className="space-y-4">
                         <ExpandableSection title="Lessons Configuration">
-                          <Textarea
-                            placeholder="Enter specific instructions for lesson generation..."
-                            value={formData.lessonInstructions}
-                            onChange={(e) => handleInputChange('lessonInstructions', e.target.value)}
-                          />
+                          <div className="space-y-4">
+                            <Input
+                              placeholder="Main topic"
+                              value={formData.lessonMainTopic}
+                              onChange={(e) => handleInputChange('lessonMainTopic', e.target.value)}
+                            />
+                            <div className="flex items-center space-x-2">
+                              <Input
+                                placeholder="Subtopic"
+                                value={formData.lessonSubtopic}
+                                onChange={(e) => handleInputChange('lessonSubtopic', e.target.value)}
+                              />
+                              <Button onClick={() => handleAddSubtopic('lesson')} variant="outline" size="icon">
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            {formData.lessonSubtopics.map((subtopic, index) => (
+                              <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 p-2 rounded-md">
+                                <span>{subtopic}</span>
+                                <Button onClick={() => handleRemoveSubtopic('lesson', index)} variant="ghost" size="sm">
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                            <Textarea
+                              placeholder="Additional instructions for lesson generation..."
+                              value={formData.lessonInstructions}
+                              onChange={(e) => handleInputChange('lessonInstructions', e.target.value)}
+                            />
+                          </div>
                         </ExpandableSection>
                         <ExpandableSection title="Flashcards Configuration">
-                          <Textarea
-                            placeholder="Enter specific instructions for flashcard generation..."
-                            value={formData.flashcardInstructions}
-                            onChange={(e) => handleInputChange('flashcardInstructions', e.target.value)}
-                          />
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                              <label className="text-sm font-medium">Number of Flashcards:</label>
+                              <NumberInput
+                                value={formData.flashcardCount}
+                                onIncrement={() => handleNumberChange('flashcardCount', true)}
+                                onDecrement={() => handleNumberChange('flashcardCount', false)}
+                              />
+                            </div>
+                            <Select
+                              value={formData.flashcardType}
+                              onValueChange={(value) => handleInputChange('flashcardType', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Flashcard type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="term-definition">Term-Definition</SelectItem>
+                                <SelectItem value="question-answer">Question-Answer</SelectItem>
+                                <SelectItem value="image-term">Image-Term</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Textarea
+                              placeholder="Additional instructions for flashcard generation..."
+                              value={formData.flashcardInstructions}
+                              onChange={(e) => handleInputChange('flashcardInstructions', e.target.value)}
+                            />
+                          </div>
                         </ExpandableSection>
                         <ExpandableSection title="Cheatsheet Configuration">
-                          <Textarea
-                            placeholder="Enter specific instructions for cheatsheet generation..."
-                            value={formData.cheatsheetInstructions}
-                            onChange={(e) => handleInputChange('cheatsheetInstructions', e.target.value)}
-                          />
+                          <div className="space-y-4">
+                            <Input
+                              placeholder="Cheatsheet title"
+                              value={formData.cheatsheetTitle}
+                              onChange={(e) => handleInputChange('cheatsheetTitle', e.target.value)}
+                            />
+                            <Select
+                              value={formData.cheatsheetFormat}
+                              onValueChange={(value) => handleInputChange('cheatsheetFormat', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Cheatsheet format" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="bullet-points">Bullet Points</SelectItem>
+                                <SelectItem value="mind-map">Mind Map</SelectItem>
+                                <SelectItem value="table">Table</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Textarea
+                              placeholder="Key points to include in the cheatsheet..."
+                              value={formData.cheatsheetKeyPoints}
+                              onChange={(e) => handleInputChange('cheatsheetKeyPoints', e.target.value)}
+                            />
+                          </div>
                         </ExpandableSection>
-                        <ExpandableSection title="Chat Configuration">
-                          <Textarea
-                            placeholder="Enter specific instructions for chat support..."
-                            value={formData.chatInstructions}
-                            onChange={(e) => handleInputChange('chatInstructions', e.target.value)}
-                          />
+                        <ExpandableSection title="Chat Support Configuration">
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id="enableFollowUpQuestions"
+                                checked={formData.enableFollowUpQuestions}
+                                onCheckedChange={(checked) => handleInputChange('enableFollowUpQuestions', checked)}
+                              />
+                              <label htmlFor="enableFollowUpQuestions" className="text-sm font-medium">
+                                Enable follow-up questions
+                              </label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id="provideSources"
+                                checked={formData.provideSources}
+                                onCheckedChange={(checked) => handleInputChange('provideSources', checked)}
+                              />
+                              <label htmlFor="provideSources" className="text-sm font-medium">
+                                Provide sources for answers
+                              </label>
+                            </div>
+                            <Textarea
+                              placeholder="Specific topics or areas for chat support to focus on..."
+                              value={formData.chatSupportFocus}
+                              onChange={(e) => handleInputChange('chatSupportFocus', e.target.value)}
+                            />
+                          </div>
                         </ExpandableSection>
                       </div>
                     </section>
@@ -322,6 +448,14 @@ interface ExpandableSectionProps {
 
 function ExpandableSection({ title, children }: ExpandableSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [contentHeight, setContentHeight] = useState(0)
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight)
+    }
+  }, [children])
 
   return (
     <div className="border rounded-lg overflow-hidden">
@@ -332,11 +466,15 @@ function ExpandableSection({ title, children }: ExpandableSectionProps) {
         {title}
         {isExpanded ? <X className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
       </button>
-      {isExpanded && (
+      <div
+        ref={contentRef}
+        className="transition-all duration-300 ease-in-out overflow-hidden"
+        style={{ maxHeight: isExpanded ? `${contentHeight}px` : '0px' }}
+      >
         <div className="p-4">
           {children}
         </div>
-      )}
+      </div>
     </div>
   )
 }
