@@ -132,10 +132,7 @@ export default function LearningHub() {
 
   const handleRoadmap = useCallback(() => {
     setRoadmapOpen(true);
-    toast.success('Generating your learning roadmap...', {
-      duration: 2000,
-      position: 'bottom-center',
-    });
+    window.location.href = '/roadmap';
   }, []);
 
   const handleQuiz = async () => {

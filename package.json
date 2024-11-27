@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.0.5",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-collapsible": "^1.1.1",
@@ -24,8 +25,10 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tabler/icons-react": "^3.22.0",
     "aceternity-ui": "^0.2.2",
+    "ai": "^4.0.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dagre": "^0.8.5",
     "framer-motion": "^11.11.17",
     "gsap": "^3.12.5",
     "lucide-react": "^0.460.0",
@@ -33,7 +36,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.5",
+    "react-hot-toast": "^2.4.1",
     "react-resizable-panels": "^2.1.7",
+    "reactflow": "^11.11.4",
     "recharts": "^2.13.3",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
