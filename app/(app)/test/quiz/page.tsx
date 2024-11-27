@@ -42,7 +42,8 @@ import {
   MessageSquare,
   Lightbulb,
   SkipBack,
-  HelpCircle
+  HelpCircle,
+  Keyboard
 } from 'lucide-react';
 import {
   Dialog,
@@ -105,6 +106,64 @@ export default function QuizPage() {
 
   const progress = Math.round((selectedAnswers.filter(ans => ans !== -1).length / quizData.length) * 100);
 
+  const clearCurrentSelection = () => {
+    const newAnswers = [...selectedAnswers];
+    newAnswers[currentQuestion] = -1;
+    setSelectedAnswers(newAnswers);
+  };
+
+  // Add keyboard handler for number keys and navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Existing Command + K handler
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowAiDialog(true);
+        return;
+      }
+
+      // Letter keys A-D for options
+      const letterMap: { [key: string]: number } = {
+        'a': 0, 'A': 0,
+        'b': 1, 'B': 1,
+        'c': 2, 'C': 2,
+        'd': 3, 'D': 3
+      };
+
+      if (e.key in letterMap) {
+        const optionIndex = letterMap[e.key];
+        if (optionIndex < quizData[currentQuestion].options.length) {
+          handleOptionSelect(optionIndex);
+        }
+      }
+
+      // Arrow keys / Enter for navigation
+      switch (e.key) {
+        case 'ArrowLeft':
+          if (currentQuestion > 0) {
+            setCurrentQuestion(prev => prev - 1);
+          }
+          break;
+        case 'ArrowRight':
+        case 'Enter':
+          if (selectedAnswers[currentQuestion] !== -1) {
+            if (currentQuestion < quizData.length - 1) {
+              setCurrentQuestion(prev => prev + 1);
+            } else if (selectedAnswers.every(ans => ans !== -1)) {
+              router.push('/test/report');
+            }
+          }
+          break;
+        case 'Backspace':
+          clearCurrentSelection();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentQuestion, selectedAnswers, router]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-2 sm:p-4 md:p-8">
       <div className="w-full max-w-4xl mx-auto">
@@ -117,20 +176,45 @@ export default function QuizPage() {
             </span>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2 text-gray-500">
               <Clock className="h-4 w-4" />
               <span className="font-mono">{formatTime(elapsedTime)}</span>
             </div>
             
             <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    onClick={clearCurrentSelection}
+                    disabled={selectedAnswers[currentQuestion] === -1}
+                    size="sm"
+                    className="flex"
+                  >
+                    <SkipBack className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Clear</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="flex items-center gap-2">
+                    <Keyboard className="h-4 w-4" />
+                    <span>Backspace</span>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild>
                   <Button
                     variant="outline"
                     onClick={() => setShowAiDialog(true)}
+                    size="sm"
                   >
-                    AI Help
+                    <Sparkles className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">AI Help</span>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -159,12 +243,17 @@ export default function QuizPage() {
                   className={cn(
                     "p-6 text-left rounded-lg transition-all duration-200",
                     "border-2 hover:border-emerald-500",
+                    "relative",
                     selectedAnswers[currentQuestion] === index 
                       ? "border-emerald-500 bg-emerald-50 text-emerald-700" 
                       : "border-gray-200 text-gray-600 hover:bg-gray-50"
                   )}
                 >
                   <span className="text-lg">{option}</span>
+                  <span className="absolute bottom-2 right-2 text-xs text-gray-400 flex items-center gap-1">
+                    <Keyboard className="h-3 w-3" />
+                    {String.fromCharCode(65 + index)}
+                  </span>
                 </button>
               ))}
             </div>
@@ -173,36 +262,60 @@ export default function QuizPage() {
 
         {/* Navigation - adjust spacing for mobile */}
         <div className="flex justify-between items-center gap-2">
-          <Button
-            variant="ghost"
-            className="gap-2"
-            onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
-            disabled={currentQuestion === 0}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="gap-2"
+                  onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
+                  disabled={currentQuestion === 0}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="flex items-center gap-2">
+                  <Keyboard className="h-4 w-4" />
+                  <span>←</span>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-          {currentQuestion === quizData.length - 1 ? (
-            <Button
-              variant="default"
-              className="gap-2"
-              onClick={() => router.push('/test/report')}
-              disabled={!selectedAnswers.every(ans => ans !== -1)}
-            >
-              Complete Quiz
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button
-              variant="default"
-              className="gap-2"
-              onClick={() => setCurrentQuestion(prev => prev + 1)}
-            >
-              Next
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          )}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                {currentQuestion === quizData.length - 1 ? (
+                  <Button
+                    variant="default"
+                    className="gap-2"
+                    onClick={() => router.push('/test/report')}
+                    disabled={!selectedAnswers.every(ans => ans !== -1)}
+                  >
+                    Complete Quiz
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="default"
+                    className="gap-2"
+                    onClick={() => setCurrentQuestion(prev => prev + 1)}
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                )}
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="flex items-center gap-2">
+                  <Keyboard className="h-4 w-4" />
+                  <span>→ or Enter</span>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* AI Assistant Dialog - make it more mobile friendly */}
